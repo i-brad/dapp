@@ -20,6 +20,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-iconly": "^2.2.10",
+    "swiper": "^11.1.9",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

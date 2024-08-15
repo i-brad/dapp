@@ -10,7 +10,10 @@ import Footer from './components/Layout/Footer'
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${GeneralSansFont.variable} ${GeneralSansFont.className}`}>
+      <body 
+        className={`${GeneralSansFont.variable} ${GeneralSansFont.className}`} 
+        suppressHydrationWarning={true}
+        >
         <Providers>
           
           <div className="h-screen flex flex-row justify-start bg-[#212121] text-white">

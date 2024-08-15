@@ -46,7 +46,7 @@ const Navbar = ({ user }) => {
         <div className="container mx-auto px-4 lg:px-4 h-full">
           <nav className="flex items-center justify-between flex-wrap py-4 h-full ">
             
-            <div className="md:flex sm:hidden h-full items-center">
+            <div className="lg:flex hidden h-full items-center">
               <div className=" relative rounded-full  items-center h-10 min-w-96">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none h-full">
                   <span className="text-[#BEBDBD] px-3 pr-4">
@@ -64,9 +64,15 @@ const Navbar = ({ user }) => {
               </div>
               
             </div>
-            <div className="w-full hidden  flex-grow lg:flex lg:items-center lg:w-auto justify-end h-full">
+            <div className="w-full  flex-grow flex items-center lg:w-auto justify-end h-full">
               
-              <div className="lg:flex lg:items-center lg:w-auto gap-5">
+              <div className="flex items-center w-auto gap-5">
+
+                  <button className='rounded-full p-3 border border-[#3B3939] lg:hidden block'>
+                    {/* <span className="text-[#BEBDBD]"> */}
+                      <SearchNormal size={22} />
+                    {/* </span> */}
+                  </button>
 
                   <button className='rounded-full p-3 border border-[#3B3939]'>
                     <NotificationBing size={22} variant="Outline" color="#BEBDBD" />
@@ -77,7 +83,7 @@ const Navbar = ({ user }) => {
                       <MenuButton className='hover:bg-[#212121]'>
                         <div className="flex items-start justify-start gap-2 border border-[#444445] rounded-t-lg rounded-b-lg h-auto px-2 min-w-[150px] py-2 w-full">
                           <Image
-                            src={`${user?.image ? user?.image : '/images/avatar-1.png'}`}
+                            src={`${'/images/avatar-1.png'}`}
                             alt=""
                             width={20}
                             height={20}
@@ -107,7 +113,7 @@ const Navbar = ({ user }) => {
                         >
                           <div className="relative flex items-start justify-start gap-2 h-auto px-2 py-2 w-full hover:bg-[#212121]">
                             <Image
-                              src={`${user?.image ? user?.image : '/images/avatar-1.png'}`}
+                              src={`${'/images/avatar-1.png'}`}
                               alt=""
                               width={35}
                               height={35}

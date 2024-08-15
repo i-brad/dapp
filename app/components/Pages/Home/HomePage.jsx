@@ -3,11 +3,18 @@ import React from 'react'
 import Image from 'next/image'
 import { Shuttle, Shuttle2 } from '../../IconComponent'
 import { forInvestors, forProjectOwners } from '@/app/lib/constants'
+import MySwiperComponent from './slider'
 
 const HomePage = () => {
   return (
     <>
-      <section className='py-12 lg:py-18'>
+      <section className=''>
+        <div className=''>
+          <MySwiperComponent/>
+        </div>
+      </section>
+      
+      <section className='py-12 lg:py-24'>
         <div className=''>
           <div className='mb-5 text-left space-y-4'>
             <h2 className='font-semibold text-xl md:text-2xl lg:text-4xl leading-[37.8px]'>
@@ -15,10 +22,32 @@ const HomePage = () => {
             </h2>
           </div>
 
-          <div className="py-6">
-            <div className='text-base leading-[26px]'>
+          <div className="py-6 overflow-x-auto xl:overflow-x-visible">
+            <div className="leading-[26px] flex gap-4 w-[200%] md:w-full">
+              <div className="min-w-[400px] md:min-w-[50%]">
+                <div className="block relative h-40 md:h-72 items-center justify-between gap-4 rounded-lg">
+                  <Image
+                    src="/images/grasp-academy.png"
+                    alt=""
+                    fill
+                    className="object-contain md:object-cover w-full h-full rounded-lg"
+                  />
+                </div>
+              </div>
+
+              <div className="min-w-[400px] md:min-w-[50%]">
+                <div className="block relative h-40 md:h-72 items-center justify-between gap-4 rounded-lg">
+                  <Image
+                    src="/images/thrustpad.png"
+                    alt=""
+                    fill
+                    className="object-contain md:object-cover w-full h-full rounded-lg"
+                  />
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </section>
 
