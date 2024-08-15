@@ -57,7 +57,7 @@ const Navbar = ({ user }) => {
                   type="search"
                   name="search"
                   id="search"
-                  className="border border-[#3B3939] py-2  block w-full min-w-full pl-14 pr-12 sm:text-sm rounded-full h-full focus:outline-none  bg-transparent text-[#BEBDBD]"
+                  className="border border-[#3B3939] py-2  block w-full min-w-full pl-14 pr-4 sm:text-sm rounded-full h-full focus:outline-none  bg-transparent text-[#BEBDBD]"
                   placeholder="Type token symbol or address to find a launchpad"
                   autoComplete='off'
                 />
@@ -70,7 +70,7 @@ const Navbar = ({ user }) => {
 
                   <button className='rounded-full p-3 border border-[#3B3939] lg:hidden block'>
                     {/* <span className="text-[#BEBDBD]"> */}
-                      <SearchNormal size={22} />
+                      <SearchNormal size={22} color="#BEBDBD" />
                     {/* </span> */}
                   </button>
 
@@ -78,7 +78,7 @@ const Navbar = ({ user }) => {
                     <NotificationBing size={22} variant="Outline" color="#BEBDBD" />
                   </button>
 
-                  <div className="relative flex items-center justify-center z-[999] ">
+                  <div className="relative flex items-center justify-center z-[999] mr-4">
                     <Menu className=" bg-[#034343]" closeOnSelect={false}>
                       <MenuButton className='hover:bg-[#212121]'>
                         <div className="flex items-start justify-start gap-2 border border-[#444445] rounded-t-lg rounded-b-lg h-auto px-2 min-w-[150px] py-2 w-full">
@@ -106,8 +106,8 @@ const Navbar = ({ user }) => {
                       </MenuButton>
                       <MenuList
                         className="bg-[#303030] py-3 text-white text-sm border-none rounded-md z-[99]"
-                        minWidth="200px"
-                        // maxWidth="180px"
+                        minWidth="170px"
+                        maxWidth="180px"
                       >
                         <MenuItem className='p-0 w-full bg-[#303030]'                      
                         >

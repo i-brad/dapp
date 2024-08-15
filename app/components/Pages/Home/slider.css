@@ -1,0 +1,40 @@
+.swiper-button-prev,
+.swiper-button-next{
+    background: #3A393699;
+    border-radius: 999px;
+    padding: 10px;
+    height: 45px;
+    width: 45px;
+}   
+.swiper-button-prev::after,
+.swiper-button-next::after{
+    font-size: 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* line-height: auto; */
+    height: 100%;
+}   
+
+@media (min-width: 992px) {
+    .swiper-pagination {
+        display: none !important;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        display: block !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .swiper-pagination {
+        display: block !important;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        display: none !important;
+    }
+}
