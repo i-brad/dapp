@@ -6,25 +6,13 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import './slider.css'
 import Link from 'next/link';
 
 const MySwiperComponent = () => {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
-      };
-  
-      window.addEventListener('resize', handleResize);
-      handleResize();
-  
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
   return (
     <Swiper 
-        // pagination={true} 
+        // pagination={true}
         spaceBetween={30}
         pagination={{
             clickable: true,
@@ -35,7 +23,7 @@ const MySwiperComponent = () => {
         
         className="mySwiper h-80 rounded-lg">
         <SwiperSlide>
-            <div className='h-full px-24 rounded-lg' style={{
+            <div className='h-full px-4 md:px-12 lg:px-24 rounded-lg' style={{
                     backgroundImage: `url('/images/e7ec75ea0dc3c2bc8fc9b3327a9d7467.jpeg')`
                 }}
                 >
@@ -59,8 +47,9 @@ const MySwiperComponent = () => {
                 <div className='bg-[#31110282] pointer-events-none absolute top-0 left-0 w-full h-full opacity-60 z-[1]'></div>
             </div>
         </SwiperSlide>
+
         <SwiperSlide>
-            <div className='h-full px-24 rounded-lg' style={{
+            <div className='h-full px-4 md:px-12 lg:px-24 rounded-lg' style={{
                     backgroundImage: `url('/images/e7ec75ea0dc3c2bc8fc9b3327a9d7467.jpeg')`
                 }}
                 >
