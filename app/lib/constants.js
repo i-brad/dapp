@@ -1,7 +1,9 @@
 'use client';
 
-import { DocumentText, Home2, Messages } from "iconsax-react";
-import { AirdropIcon, LockIcon2, Shuttle, Shuttle2, StakeIcon } from "@/app/components/IconComponent";
+import { Crown, Crown1, DocumentText, DollarCircle, Home2, Messages } from "iconsax-react";
+import { AirdropIcon, CarbonReview, LockIcon2, Locking, PeopleCommunity, Shuttle, Shuttle2, StakeIcon } from "@/app/components/IconComponent";
+import { DataTableReference } from "@carbon/icons-react";
+import { Icon } from "@iconify/react";
 
 export const topMenuLinks = [
   {
@@ -55,37 +57,37 @@ export const bottomMenuLinks = [
 export const forProjectOwners =[
   {
     id: 1,
-    icon: '',    
+    icon: <Shuttle2 size={32}/>,    
     title: 'Fair Lunchpad',
     subtitle: 'Easily and customize how you want to raise for your project.'
   },
   {
     id: 2,
-    icon: '',    
+    icon: <Crown1 size={32} />,    
     title: 'Marketing',
     subtitle: 'We provide marketing support tailored to your project needs.'
   },
   {
     id: 3,
-    icon: '',    
+    icon:  <Locking size={32} />,    
     title: 'Locking',
     subtitle: 'Lock your team tokens to grow investors confidence.'
   },
   {
     id: 4,
-    icon: '',    
+    icon: <DataTableReference size={32}/>,    
     title: 'Staking',
     subtitle: 'Create a staking campaign with yields to hold selling pressure.'
   },
   {
     id: 5,
-    icon: '',    
+    icon:  <DataTableReference size={32}/>,    
     title: 'Referral',
     subtitle: 'With our referral system you can make your presale viral.'
   },
   {
     id: 6,
-    icon: '',    
+    icon:  <Icon icon="material-symbols-light:security" width={32} height={32} />,    
     title: 'Security',
     subtitle: 'Your tokens and funds are safe. Our  contracts are audited by the best.'
   },
@@ -94,19 +96,19 @@ export const forProjectOwners =[
 export const forInvestors =[
   {
     id: 1,
-    icon: '',    
+    icon: <PeopleCommunity />,    
     title: 'Join Community',
     subtitle: 'Join our community on telegram and twitter to find out when new project is listed on Thrustpad before the public.'
   },
   {
     id: 2,
-    icon: '',    
+    icon: <CarbonReview size={32}/>,    
     title: 'Review Project',
     subtitle: 'DYOR, Go through project information, token locks, team, KYC and Audit details to make informed investment decisions'
   },
   {
     id: 3,
-    icon: '',    
+    icon: <DollarCircle size={32} />,    
     title: 'Invest with Confidence',
     subtitle: 'You can invest in projects with great fundamentals during the sale or sell back before the sale ends with minimal fees on our launchpad.'
   }

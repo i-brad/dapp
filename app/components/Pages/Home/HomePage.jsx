@@ -92,7 +92,7 @@ const HomePage = () => {
               <div key={index} className='card flex flex-col gap-5 bg-[#272727] rounded-2xl py-4 px-4 min-h-[180px] md:max-h-[250px] lg:max-h-full'>
                   <div>
                     <span className='card-icon h-14 w-14 rounded-full p-3 text-[#FFA178] bg-[#414040] inline-block flex items-center justify-center'>
-                      <Shuttle2 size={32}/>
+                      {item.icon}
                     </span>              
                   </div>
 
@@ -126,7 +126,7 @@ const HomePage = () => {
               <div key={index} className='card flex flex-col gap-5 bg-[#272727] rounded-2xl py-4 px-4 min-h-[180px] md:max-h-[250px] lg:max-h-full'>
                   <div>
                     <span className='card-icon h-14 w-14 rounded-full p-3 text-[#FFA178] bg-[#414040] inline-block flex items-center justify-center'>
-                      <Shuttle2 size={32}/>
+                      {item.icon}
                     </span>              
                   </div>
 
