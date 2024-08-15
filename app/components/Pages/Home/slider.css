@@ -22,10 +22,6 @@
         display: none !important;
     }
 
-    .swiper-button-prev,
-    .swiper-button-next {
-        display: block !important;
-    }
 }
 
 @media (max-width: 991px) {
@@ -33,8 +29,5 @@
         display: block !important;
     }
 
-    .swiper-button-prev,
-    .swiper-button-next {
-        display: none !important;
-    }
+
 }

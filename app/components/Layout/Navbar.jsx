@@ -30,7 +30,7 @@ const Navbar = ({ user }) => {
     const showDashMenu = null;
     return (
         <>
-            <header className="bg-[#272727] border-b-[0.5px] border-[#3B3939] z-[999] h-24 ">
+            <header className="bg-[#272727] border-b-[0.5px] border-[#3B3939] z-[999] h-16 md:h-24 ">
                 <div className="container mx-auto px-4 lg:px-4 h-full">
                     <nav className="flex items-center justify-between flex-wrap py-4 h-full ">
                         <div className="lg:flex hidden h-full items-center">

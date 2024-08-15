@@ -17,3 +17,32 @@ input:-webkit-autofill:active {
 input[data-autocompleted] {
   background-color: transparent !important;
 }
+
+/* Targeting the scrollbar track */
+.scrollbar-change::-webkit-scrollbar-track {
+  background-color: #f4f4f4; /* Background color of the track */
+  border-radius: 10px;       /* Rounding the track corners */
+}
+
+/* Targeting the scrollbar itself */
+.scrollbar-change::-webkit-scrollbar {
+  width: 8px;               /* Width of the vertical scrollbar */
+  height: 8px;              /* Height of the horizontal scrollbar */
+}
+
+/* Targeting the scrollbar thumb (the draggable part) */
+.scrollbar-change::-webkit-scrollbar-thumb {
+  background-color: #888;    /* Color of the thumb */
+  border-radius: 10px;       /* Rounding the thumb corners */
+  border: 2px solid #f4f4f4; /* Adding a border around the thumb */
+}
+
+/* Targeting the scrollbar corner (where the horizontal and vertical scrollbars meet) */
+.scrollbar-change::-webkit-scrollbar-corner {
+  background-color: #f4f4f4; /* Color of the corner */
+}
+
+/* Hover effect for the scrollbar thumb */
+.scrollbar-change::-webkit-scrollbar-thumb:hover {
+  background-color: #FFA178;    /* Darker color on hover */
+}

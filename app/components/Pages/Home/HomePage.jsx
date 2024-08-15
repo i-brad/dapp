@@ -22,26 +22,26 @@ const HomePage = () => {
             </h2>
           </div>
 
-          <div className="py-6 overflow-x-auto xl:overflow-x-visible">
+          <div className="py-6 overflow-x-auto lg:overflow-x-scroll xl:overflow-x-visible scrollbar-change">
             <div className="leading-[26px] flex gap-4 w-[200%] md:w-full">
               <div className="min-w-[400px] md:min-w-[50%]">
-                <div className="block relative h-40 md:h-72 items-center justify-between gap-4 rounded-lg">
+                <div className="block relative h-40 md:h-60 lg:h-72 items-center justify-between gap-4 rounded-lg">
                   <Image
                     src="/images/grasp-academy.svg"
-                    alt=""
+                    alt="grasp-academy"
                     fill
-                    className="object-contain md:object-cover w-full h-full rounded-lg"
+                    className="object-contain w-full h-full rounded-lg"
                   />
                 </div>
               </div>
 
               <div className="min-w-[400px] md:min-w-[50%]">
-                <div className="block relative h-40 md:h-72 items-center justify-between gap-4 rounded-lg">
+                <div className="block relative h-40 md:h-60 lg:h-72 items-center justify-between gap-4 rounded-lg">
                   <Image
                     src="/images/thrustpad.svg"
-                    alt=""
+                    alt="thrustpad"
                     fill
-                    className="object-contain md:object-cover w-full h-full rounded-lg"
+                    className="object-fill  w-full h-full rounded-lg"
                   />
                 </div>
               </div>
