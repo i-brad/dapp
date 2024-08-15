@@ -8,11 +8,12 @@ import Footer from "./components/Layout/Footer";
 import { WagProvider } from "./providers/wagmi";
 import { headers } from "next/headers";
 
-export const Metadata = {
+export const metadata = {
     title: {
         template: "Thrustpad ILO - %s",
         default: "Thrustpad ILO",
     },
+    keyword: ["ThrustPad", "Educhain Launchpad", "Launchpad", "Initial Liquidity Offering", "ILO"],
     description:
         "At Thrustpad, we help raise funds for Initial Liquidity Offerings (ILOs) to provide the necessary liquidity for new projects.",
     openGraph: {
