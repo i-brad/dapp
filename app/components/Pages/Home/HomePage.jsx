@@ -27,7 +27,7 @@ const HomePage = () => {
               <div className="min-w-[400px] md:min-w-[50%]">
                 <div className="block relative h-40 md:h-72 items-center justify-between gap-4 rounded-lg">
                   <Image
-                    src="/images/grasp-academy.png"
+                    src="/images/grasp-academy.svg"
                     alt=""
                     fill
                     className="object-contain md:object-cover w-full h-full rounded-lg"
@@ -38,7 +38,7 @@ const HomePage = () => {
               <div className="min-w-[400px] md:min-w-[50%]">
                 <div className="block relative h-40 md:h-72 items-center justify-between gap-4 rounded-lg">
                   <Image
-                    src="/images/thrustpad.png"
+                    src="/images/thrustpad.svg"
                     alt=""
                     fill
                     className="object-contain md:object-cover w-full h-full rounded-lg"
