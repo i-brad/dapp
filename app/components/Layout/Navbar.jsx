@@ -3,20 +3,7 @@ import React, { useContext } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import classNames from "classnames";
-import {
-    RecordCircle,
-    Profile,
-    Global,
-    NotificationBing,
-    Profile2User,
-    LogoutCurve,
-    Setting2,
-    Setting3,
-    SearchNormal,
-    ArrowDown2,
-    ArrowUp,
-    Copy,
-} from "iconsax-react";
+import { NotificationBing, SearchNormal } from "iconsax-react";
 import Image from "next/image";
 import { Category, Search } from "react-iconly";
 import { LoaderIcon, LogoutIcon } from "../IconComponent";
