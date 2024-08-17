@@ -1,6 +1,6 @@
 'use client';
 
-import { Crown, Crown1, DocumentText, DollarCircle, Home2, Messages } from "iconsax-react";
+import { Coin, Coin1, Crown, Crown1, DocumentText, DollarCircle, Home2, Messages } from "iconsax-react";
 import { AirdropIcon, CarbonReview, LockIcon2, Locking, PeopleCommunity, Shuttle, Shuttle2, StakeIcon } from "@/app/components/IconComponent";
 import { DataTableReference } from "@carbon/icons-react";
 import { Icon } from "@iconify/react";
@@ -21,19 +21,20 @@ export const topMenuLinks = [
   {
     label: 'Lock',
     href: '/lock',
-    icon: <LockIcon2 size={16} />,
+    icon: <LockIcon2 size={16}/>,
     isDropdownMenu: false,
   },
   {
     label: 'Airdrop',
     href: '/airdrop',
-    icon: <AirdropIcon/>,
+    icon: <AirdropIcon />,
+    // icon: <Icon icon="fluent-mdl2:parachute" width={16} height={16} />,
     isDropdownMenu: false,
   },
   {
     label: 'Stake',
     href: '/stake',
-    icon: <StakeIcon />,
+    icon: <Coin1 size={16} />,
     isDropdownMenu: false,
   },
 ];
