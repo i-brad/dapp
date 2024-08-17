@@ -44,5 +44,5 @@ input[data-autocompleted] {
 
 /* Hover effect for the scrollbar thumb */
 .scrollbar-change::-webkit-scrollbar-thumb:hover {
-  background-color: #FFA178;    /* Darker color on hover */
+  background-color: #DA5921;    /* Darker color on hover */
 }

@@ -87,9 +87,9 @@ const Sidebar = ({ user }) => {
                       className={`menu-item w-full font-thin ${
                         pathname == menuItem.href ||
                         pathname.startsWith(`${menuItem.href}/`)
-                          ? 'bg-[#034343] text-[#fff]'
+                          ? ' text-[#EA6A32]'
                           : 'text-white '
-                      }  flex items-center  px-5 transition-colors duration-200 ease-in hover:text-[#fff] justify-between text-sm hover:border-[#008080] hover:bg-[#034343]  text-left h-10 ${
+                      }  flex items-center  px-5 transition-colors duration-200 ease-in hover:text-[#EA6A32] justify-between text-sm text-left h-10 ${
                         isDropdown ? 'active-dropdown' : ''
                       }`}
                     >
@@ -122,9 +122,9 @@ const Sidebar = ({ user }) => {
                       className={`menu-item w-full font-thin ${
                         pathname == menuItem.href ||
                         pathname.startsWith(`${menuItem.href}/`)
-                          ? 'bg-[#034343] text-[#fff]'
+                          ? 'text-[#EA6A32]'
                           : 'text-white '
-                      }  flex items-center  px-5 transition-colors duration-200 ease-in hover:text-[#fff] justify-between text-sm hover:border-[#008080] hover:bg-[#034343]  text-left h-10 ${
+                      }  flex items-center  px-5 transition-colors duration-200 ease-in hover:text-[#EA6A32] justify-between text-sm text-left h-10 ${
                         isDropdown ? 'active-dropdown' : ''
                       }`}
                     >
