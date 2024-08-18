@@ -9,6 +9,8 @@ const { wallets } = getDefaultWallets();
 export const educhain = {
     id: 656476,
     name: "EDUCHAIN",
+    iconUrl: "https://www.thrustpad.finance/images/logo2.svg",
+    iconBackground: "#fff",
     nativeCurrency: { name: "EDUCHAIN", symbol: "EDU", decimals: 18 },
     rpcUrls: {
         default: { http: ["https://rpc.open-campus-codex.gelato.digital"] },
