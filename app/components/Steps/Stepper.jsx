@@ -365,8 +365,8 @@ export default function StepperStake() {
                                     </div>
 
                                     <div className='mt-1 flex flex-wrap gap-2'>
-                                        {periods?.map((period)=>(
-                                            <label htmlFor={`period_${period.id}`} className="mr-4 border border-[#464849] rounded p-2 cursor-pointer ">
+                                        {periods?.map((period, index)=>(
+                                            <label key={index} htmlFor={`period_${period.id}`} className="mr-4 border border-[#464849] rounded p-2 cursor-pointer ">
                                                 <input
                                                     type="checkbox"
                                                     id={`period_${period.id}`}
