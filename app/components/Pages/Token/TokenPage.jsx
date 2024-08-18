@@ -145,7 +145,7 @@ const TokenPage = () => {
                                 </div>
                             </div>
                             
-                            <div className="flex flex-row justify-between   gap-1 relative w-full">
+                            <div className="flex flex-row justify-between   gap-3 relative w-full flex-wrap">
                                 <div>
                                     <div className='flex items-center mb-1 '>
                                         <label 
