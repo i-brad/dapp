@@ -63,11 +63,11 @@ const SingleLock = () => {
                                 </h3>
 
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    <div className="p-2 w-full flex justify-between items-center">
+                                    <div className="p-2 w-full flex justify-between items-center flex-wrap">
                                         <h3 className="uppercase font-medium text-[#898582] text-sm">
                                             Token address
                                         </h3>
-                                        <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center">
+                                        <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center text-wrap">
                                             0x7Fefe59726c7c5f4BD7B0224F1FCfA58BAe508fc
                                             <span className='text-[#898582]'><Copy size={14}/></span>
                                         </button>
@@ -105,11 +105,11 @@ const SingleLock = () => {
                                 </h3>
 
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    <div className="p-2 w-full flex justify-between items-center">
+                                    <div className="p-2 w-full flex justify-between items-center  flex-wrap">
                                         <h3 className="uppercase font-medium text-[#898582] text-sm">
                                             Token amount locked
                                         </h3>
-                                        <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center">
+                                        <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center text-wrap">
                                             0x7Fefe59726c7c5f4BD7B0224F1FCfA58BAe508fc
                                             <span className='text-[#898582]'><Copy size={14}/></span>
                                         </button>
@@ -155,7 +155,7 @@ const SingleLock = () => {
                                 </h3>
                             </div>
                             <div className="px-2 py-4  border-y border-[#3B3939]">
-                                <div className="flex flex-row justify-between items-center">
+                                <div className="flex flex-row justify-between items-center flex-wrap">
                                     <div className="flex flex-row items-center gap-2">
                                         <div className="flex flex-row w-20">
                                             <div className="w-full h-20 min-h-[50px] relative overflow-hidden featured__card_img block object-contain rounded-full">
@@ -190,7 +190,7 @@ const SingleLock = () => {
                                 
                                 <div className='pt-4 space-y-4'>
                                     <div className='space-y-2'>
-                                        <div className='flex justify-between items-center text-[#ADB4B9] font-medium text-xs'>
+                                        <div className='flex justify-between items-center text-[#ADB4B9] font-medium text-xs flex-wrap gap-2'>
                                             <span>
                                                 Progress (10.00%)
                                             </span>
@@ -205,7 +205,7 @@ const SingleLock = () => {
                                     </div>
 
                                     <div className='flex items-center justify-center w-full'>
-                                        <button className="bg-[#DA5921] hover:bg-[#DA5921] w-1/2 whitespace-nowrap 
+                                        <button className="bg-[#DA5921] hover:bg-[#DA5921] w-full md:w-1/2 whitespace-nowrap 
                                             disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                                             transition-all duration-75 border-none px-5 
                                             font-medium p-3 text-base text-white block"
