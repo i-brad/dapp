@@ -662,7 +662,7 @@ export default function StepperStake() {
         <Box mt={4}>
             <div className='flex items-center justify-center w-full gap-3 flex-wrap'>
                 {activeStep < steps.length - 1 ? (
-                        <button onClick={handleNext} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] max-w-[250px] whitespace-nowrap 
+                        <button onClick={handleNext} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
                             disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                             transition-all duration-75 border-none px-5 
                             font-medium p-3 text-base text-white block"
