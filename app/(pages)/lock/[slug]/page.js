@@ -64,7 +64,7 @@ const SingleLock = () => {
 
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
                                     <div className="p-2 w-full flex justify-between items-center flex-wrap">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className="font-medium text-[#898582] text-sm">
                                             Token address
                                         </h3>
                                         <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center text-wrap">
@@ -73,7 +73,7 @@ const SingleLock = () => {
                                         </button>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className="font-medium text-[#898582] text-sm">
                                             Token name
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
@@ -81,7 +81,7 @@ const SingleLock = () => {
                                         </span>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
                                             Token symbol
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
@@ -89,7 +89,7 @@ const SingleLock = () => {
                                         </span>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
                                             Total supply
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
@@ -106,7 +106,7 @@ const SingleLock = () => {
 
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
                                     <div className="p-2 w-full flex justify-between items-center  flex-wrap">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
                                             Token amount locked
                                         </h3>
                                         <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center text-wrap">
@@ -115,7 +115,7 @@ const SingleLock = () => {
                                         </button>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
                                             Owner
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
@@ -123,7 +123,7 @@ const SingleLock = () => {
                                         </span>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
                                             Lock time
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
@@ -131,7 +131,7 @@ const SingleLock = () => {
                                         </span>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="uppercase font-medium text-[#898582] text-sm">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
                                             Unlock time
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">

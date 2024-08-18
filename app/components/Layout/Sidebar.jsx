@@ -31,7 +31,7 @@ const Sidebar = ({ user }) => {
   const [isDropdown, setIsDropdown] = useState(true);
 
   const wrapperClasses = classNames(
-    'h-full sidebar pb-4 bg-[#272727] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[1px] border-[#3B3939] hidden w-20 z-50'
+    'h-full sidebar pb-4 bg-[#272727] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[1px] border-[#3B3939] hidden hover:w-56 w-20  z-50 fixed'
   );
 
   // w-56
@@ -63,16 +63,27 @@ const Sidebar = ({ user }) => {
               <div className="px-3 w-full block h-full ">
                 <Link
                   href={'/'}
-                  className="flex items-center w-full justify-center h-full"
+                  className="flex"
                 >
-                  <Image
-                    src="/images/logo2.svg"
-                    height={100}
-                    width={100}
+                  <div className='flex items-center w-20 justify-center h-20'>
+                    <Image
+                      src="/images/logo2.svg"
+                      height={100}
+                      width={100}
+                      className="transition 300ms ease object-contain w-auto h-auto"
+                      priority
+                      alt="logo"
+                    />
+                  </div>
+                  
+                  {/* <Image
+                    src="/images/logo3.svg"
+                    height={50}
+                    width={50}
                     className="transition 300ms ease object-contain w-auto h-auto"
                     priority
                     alt="logo"
-                  />
+                  /> */}
                 </Link>
               </div>
             </div>
@@ -96,11 +107,17 @@ const Sidebar = ({ user }) => {
                       <div className="flex items-center justify-center flex-grow h-full gap-3">
                         <span
                           onClick={menuItem.action}
-                          className="text-left h-full flex items-center"
+                          className="text-left flex items-center justify-center w-20 h-20"
                         >
                           {menuItem.icon}
                         </span>
-                        <div className=" w-full h-full flex items-center hidden">
+                        {/* <span
+                          onClick={menuItem.action}
+                          className="text-left h-full flex items-center"
+                        >
+                          {menuItem.icon}
+                        </span> */}
+                        <div className=" w-full h-full flex items-center">
                           <div
                             className={classNames(
                               'text-base font-normal w-full flex-1 flex-grow flex items-center h-full'
@@ -131,11 +148,11 @@ const Sidebar = ({ user }) => {
                       <div className="flex items-center justify-center flex-grow h-full gap-3">
                         <span
                           onClick={menuItem.action}
-                          className="text-left h-full flex items-center"
+                          className="text-left flex items-center justify-center w-20 h-20"
                         >
                           {menuItem.icon}
                         </span>
-                        <div className=" w-full h-full flex items-center hidden">
+                        <div className=" w-full h-full flex items-center">
                           <div
                             className={classNames(
                               'text-base font-normal w-full flex-1 flex-grow flex items-center h-full'

@@ -23,7 +23,7 @@ const StakeAgree = ({ isOpen, onClose }) => {
                 backdropFilter='blur(10px) hue-rotate(90deg)'
 
         />
-            <ModalContent className='bg-[#303030] text-white min-h-[300px] py-[25px] px-6'>
+            <ModalContent className='bg-[#303030] text-white min-h-[300px] py-[25px] px-6 rounded-2xl'>
                 <ModalCloseButton autoFocus={false} className='focus:ring-0 focus:outline-none'/>
                 <ModalBody>
                     <div className='flex items-center flex-col justify-center gap-4 max-w-md text-center'>
@@ -32,6 +32,7 @@ const StakeAgree = ({ isOpen, onClose }) => {
                                 src={"/images/coin.png"}
                                 alt={"fall-back"}
                                 fill
+                                
                                 className="rounded-t-[16px] w-full h-full object-cover object-center"
                                 priority
                             />

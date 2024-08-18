@@ -16,6 +16,7 @@ import {
   useSteps,
 } from '@chakra-ui/react';
 import { MdOutlineRadioButtonChecked } from 'react-icons/md';
+import Link from 'next/link';
 
 const steps = [
   { title: 'Verify Token', description: 'Enter token details or create a token for staking and reward' },
@@ -153,12 +154,19 @@ export default function StepperStake() {
                         <div>
 
                             <div className="mb-6 flex flex-col gap-1 relative w-full">
-                                <label
-                                    htmlFor="address"
-                                    className="text-sm text-[#FFFCFB] mb-1"
-                                >
-                                    Token Address
-                                </label>
+                                <div className='flex items-center justify-between flex-wrap mb-1'>
+
+                                
+                                    <label
+                                        htmlFor="address"
+                                        className="text-sm text-[#FFFCFB] "
+                                    >
+                                        Token Address
+                                    </label>
+                                    <Link href={'/token'} className='text-[#CCDCDF] text-base p-2 px-4 rounded-3xl border border-[#A8B8C2]'>
+                                        Create Token
+                                    </Link>
+                                </div>
                                 <input
                                     type="text"
                                     id="address"
@@ -540,7 +548,7 @@ export default function StepperStake() {
                                         <h3 className="font-medium text-[#898582] text-sm">
                                             Token address
                                         </h3>
-                                        <button type='button' className="font-medium text-[#FFFFFF] text-sm text-wrap overflow-clip">
+                                        <button type='button' className="font-medium text-[#FFFFFF] text-sm">
                                             0x7Fefe59726c7c5f4BD7B0224F1FCfA58BAe508fc
                                         </button>
                                     </div>
