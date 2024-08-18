@@ -73,7 +73,6 @@ export default function StepperStake() {
         <Stack>
             <Stepper index={activeStep} gap="0" className='max-w-5xl mx-auto w-full'>
                 {steps.map((step, index) => (
-                    <>
                         <Step key={index}>
                             <StepIndicator
                                 sx={{
@@ -126,19 +125,16 @@ export default function StepperStake() {
                                 }}
                             />
                         </Step>
-                    </>
                 ))}
             </Stepper>
 
             <div className=' hidden lg:block max-w-7xl mx-auto w-full'>
                 <div className='flex items-center justify-between text-center'>
                     {steps.map((step, index) => (
-                        <>
-                            <div className='flex flex-col gap-2 text-center max-w-xs'>
-                                <p className={`text-base font-medium ${activeStep === index ? 'text-[#EA6A32]' : 'text-white'}`}>{step.title}</p>
-                                <p className='text-[#CCDCDF]'>{step.description}</p>                            
-                            </div>
-                        </>
+                        <div key={index} className='flex flex-col gap-2 text-center max-w-xs'>
+                            <p className={`text-base font-medium ${activeStep === index ? 'text-[#EA6A32]' : 'text-white'}`}>{step.title}</p>
+                            <p className='text-[#CCDCDF]'>{step.description}</p>                            
+                        </div>
                     ))}
                 </div>
             </div>
@@ -664,7 +660,7 @@ export default function StepperStake() {
       
       
         <Box mt={4}>
-            <div className='flex items-center justify-center w-full gap-3 '>
+            <div className='flex items-center justify-center w-full gap-3 flex-wrap'>
                 {activeStep < steps.length - 1 ? (
                         <button onClick={handleNext} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] max-w-[250px] whitespace-nowrap 
                             disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
@@ -675,7 +671,7 @@ export default function StepperStake() {
                         </button>
                     ) : (
                     <>
-                        <button onClick={handleFinish} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] max-w-[250px] whitespace-nowrap 
+                        <button onClick={handleFinish} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
                             disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                             transition-all duration-75 border-none px-5 
                             font-medium p-3 text-base text-white block"
@@ -683,7 +679,7 @@ export default function StepperStake() {
                             Approve stake
                         </button>
 
-                        <button onClick={handleFinish} disabled aria-disabled="true" className="bg-[#393737] text-[#878483] min-w-[200px] max-w-[250px] whitespace-nowrap 
+                        <button onClick={handleFinish} disabled aria-disabled="true" className="bg-[#393737] text-[#878483] min-w-[200px] whitespace-nowrap w-full md:w-auto
                             disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                             transition-all duration-75 border-none px-5 
                             font-medium p-3 text-base text-white block"
