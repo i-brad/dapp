@@ -31,7 +31,7 @@ const Navbar = ({ user }) => {
     return (
         <>
             <header className="bg-[#272727] border-b-[0.5px] border-[#3B3939] z-[999] h-16 md:h-24 ">
-                <div className="container mx-auto px-4 lg:px-4 h-full">
+                <div className="md:max-w-[calc(100%-14rem)] mx-auto px-4 lg:px-4 h-full">
                     <nav className="flex items-center justify-between flex-wrap py-4 h-full ">
                         <div className="lg:flex hidden h-full items-center">
                             <div className=" relative rounded-full  items-center h-10 min-w-96">

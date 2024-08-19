@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
                             <div className="flex-1 h-full overflow-y-auto scrollbar-change">
                                 <main className="main-wrapper ">
                                     <Navbar />
-                                    <div className="container h-full py-2 lg:py-4 px-4 lg:px-4 mx-auto ">
+                                    <div className="md:max-w-[calc(100%-14rem)] h-full py-2 lg:py-4 px-4 lg:px-4 mx-auto ">
                                         {children}
                                     </div>
                                     <Footer />

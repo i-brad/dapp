@@ -15,7 +15,7 @@ import { Danger } from "iconsax-react";
 const Footer = () => {
     return (
         <footer className="bg-[#272727] text-white py-12">
-            <div className="container mx-auto px-4">
+            <div className="w-full md:max-w-[calc(100%-14rem)] mx-auto px-4">
                 <div className="space-y-16">
                     <div className="py-[18px] px-6 bg-[#3D3D3D] rounded-lg">
                         <div className="flex items-start w-full gap-2">

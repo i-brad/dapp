@@ -50,8 +50,8 @@ const FairLaunch = () => {
                 </div>
 
                 <div>
-                    <div className='flex items-center justify-between flex-wrap gap-3'>
-                        <div className='flex flex-1 items-center justify-start gap-2 flex-wrap'>
+                    <div className='flex items-center justify-between flex-wrap lg:flex-nowrap gap-3'>
+                        <div className='flex items-center gap-2 w-full'>
                             <div className='flex items-center gap-2'>
                                 <button 
                                     className={`${viewType === 0 ? 'bg-[#303132] text-[#EA6A32]' : 'bg-[#272727] text-white'} hover:bg-[#303132] hover:text-[#EA6A32] p-2 rounded`} 
@@ -65,8 +65,7 @@ const FairLaunch = () => {
                                     <MdMenu size={25}/>
                                 </button>
                             </div>
-                            <div>
-                                <div className=" relative rounded-full  items-center w-auto md:w-40 md:min-w-[25rem] h-10 ">
+                                <div className=" relative rounded-full  items-center w-full max-w-[563px] h-10 ">
                                     <div className="absolute inset-y-0 left-0 pl-1 flex items-center pointer-events-none h-full">
                                         <span className="text-gray-500 px-3">
                                             <SearchNormal1 size={22} />
@@ -80,53 +79,51 @@ const FairLaunch = () => {
                                         placeholder="Search"
                                     />
                                 </div>
-                            </div>
+
                         </div>
 
-                        <div>
-                            <div className="flex items-center justify-end gap-4 flex-wrap w-full">
-                                <select
-                                    name="status"
-                                    id="status"
-                                    defaultValue={0} 
-                                    className="border border-[#3B3939] py-2 px-4 text-sm block min-w-24 rounded-full h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
-                                >
-                                    <option value={0}>
-                                        All Status
-                                    </option>
-                                    <option>
-                                        Completed
-                                    </option>
-                                </select>
+                        <div className="flex items-center justify-end gap-2">
+                            <select
+                                name="status"
+                                id="status"
+                                defaultValue={0} 
+                                className="border border-[#3B3939] py-2 px-4 text-sm block rounded-full h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
+                            >
+                                <option value={0}>
+                                    All Status
+                                </option>
+                                <option>
+                                    Completed
+                                </option>
+                            </select>
 
-                                <select
-                                    name="status"
-                                    id="status"
-                                    defaultValue={0} 
-                                    className="border border-[#3B3939] py-2 px-4 text-sm block min-w-24 rounded-full h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
-                                >
-                                    <option value={0}>
-                                        No sort
-                                    </option>
-                                    <option>
-                                        Completed
-                                    </option>
-                                </select>
+                            <select
+                                name="status"
+                                id="status"
+                                defaultValue={0} 
+                                className="border border-[#3B3939] py-2 px-4 text-sm block rounded-full h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
+                            >
+                                <option value={0}>
+                                    No sort
+                                </option>
+                                <option>
+                                    Completed
+                                </option>
+                            </select>
 
-                                <select
-                                    name="status"
-                                    defaultValue={0} 
-                                    id="status"
-                                    className="border border-[#3B3939] py-2 px-4 text-sm block min-w-24 rounded-full h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
-                                >
-                                    <option value={0}>
-                                        Types
-                                    </option>
-                                    <option>
-                                        Completed
-                                    </option>
-                                </select>
-                            </div>
+                            <select
+                                name="status"
+                                defaultValue={0} 
+                                id="status"
+                                className="border border-[#3B3939] py-2 px-4 text-sm block rounded-full h-full focus:outline-none bg-[#212121] text-white selection:bg-black"
+                            >
+                                <option value={0}>
+                                    Types
+                                </option>
+                                <option>
+                                    Completed
+                                </option>
+                            </select>
                         </div>
                     </div>
 

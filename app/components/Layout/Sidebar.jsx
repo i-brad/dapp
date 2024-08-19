@@ -54,7 +54,7 @@ const Sidebar = ({ user }) => {
       <div
         className={wrapperClasses}
         style={{
-          transition: 'width 0s ease-in-out 0s ',
+          transition: 'width 500ms ease-in-out ',
         }}
       >
         <div className="flex flex-col">
