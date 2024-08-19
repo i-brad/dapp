@@ -334,7 +334,7 @@ const TelegramIcon = ({width=24, height=25}) => {
           <clipPath id="clip0_29_1564">
             <rect
               width={width}
-              height={width}
+              height={height}
               fill="currentColor"
               transform="translate(0 0.894043)"
             />
