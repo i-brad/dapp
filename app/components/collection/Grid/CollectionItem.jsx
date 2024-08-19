@@ -2,7 +2,7 @@ import { Progress } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { TelegramIcon, TwitterIcon2 } from '../IconComponent'
+import { TelegramIcon, TwitterIcon2 } from '../../IconComponent'
 import { Global } from 'iconsax-react'
 
 const CollectionItem = () => {

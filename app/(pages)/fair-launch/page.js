@@ -11,9 +11,10 @@ import {
     Tabs,
 } from "@chakra-ui/react";
 import Image from 'next/image';
-import CollectionGrid from '@/app/components/collection/CollectionGrid';
+import CollectionGrid from '@/app/components/collection/Grid/CollectionGrid';
 import { MdMenu } from 'react-icons/md';
 import EmptyState from '@/app/components/EmptyState';
+import CollectionList from '@/app/components/collection/List/CollectionList';
 
 const FairLaunch = () => {
     const [viewType, setViewType] = useState(0);
@@ -41,38 +42,41 @@ const FairLaunch = () => {
                 </div>
 
                 <div>
-                    <div className='flex items-center justify-between'>
-                        <div className='flex items-center gap-2'>
-                            <button 
-                                className={`${viewType === 0 ? 'bg-[#303132] text-[#EA6A32]' : 'bg-[#272727] text-white'} hover:bg-[#303132] hover:text-[#EA6A32] p-2 rounded`} 
-                                onClick={()=>handleChange(0)}>
-                                <Menu size={24}/>
-                            </button>
-                            <button 
-                                className={`${viewType === 1 ? 'bg-[#303132] text-[#EA6A32]' : 'bg-[#272727] text-white'} hover:bg-[#303132] hover:text-[#EA6A32] p-2 rounded`} 
-                                onClick={()=>handleChange(1)}
-                                >
-                                <MdMenu size={24}/>
-                            </button>
-                        </div>
-                        <div>
-                            <div className=" relative rounded-full  items-center w-40 min-w-[25rem] h-10 hidden lg:block">
-                                <div className="absolute inset-y-0 left-0 pl-1 flex items-center pointer-events-none h-full">
-                                    <span className="text-gray-500 px-3">
-                                        <SearchNormal1 size={22} />
-                                    </span>
+                    <div className='flex items-center justify-between flex-wrap gap-3'>
+                        <div className='flex flex-1 items-center justify-start gap-2 flex-wrap'>
+                            <div className='flex items-center gap-2'>
+                                <button 
+                                    className={`${viewType === 0 ? 'bg-[#303132] text-[#EA6A32]' : 'bg-[#272727] text-white'} hover:bg-[#303132] hover:text-[#EA6A32] p-2 rounded`} 
+                                    onClick={()=>handleChange(0)}>
+                                    <Menu size={24}/>
+                                </button>
+                                <button 
+                                    className={`${viewType === 1 ? 'bg-[#303132] text-[#EA6A32]' : 'bg-[#272727] text-white'} hover:bg-[#303132] hover:text-[#EA6A32] p-2 rounded`} 
+                                    onClick={()=>handleChange(1)}
+                                    >
+                                    <MdMenu size={25}/>
+                                </button>
+                            </div>
+                            <div>
+                                <div className=" relative rounded-full  items-center w-auto md:w-40 md:min-w-[25rem] h-10 ">
+                                    <div className="absolute inset-y-0 left-0 pl-1 flex items-center pointer-events-none h-full">
+                                        <span className="text-gray-500 px-3">
+                                            <SearchNormal1 size={22} />
+                                        </span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="search"
+                                        id="search"
+                                        className="border border-[#3B3939] py-2 px-4  block w-full pl-12 pr-12 sm:text-sm rounded-full h-full focus:outline-none bg-transparent text-white"
+                                        placeholder="Search"
+                                    />
                                 </div>
-                                <input
-                                    type="text"
-                                    name="search"
-                                    id="search"
-                                    className="border border-[#3B3939] py-2 px-4  block w-full pl-12 pr-12 sm:text-sm rounded-full h-full focus:outline-none bg-transparent text-white"
-                                    placeholder="Search"
-                                />
                             </div>
                         </div>
+
                         <div>
-                            <div className="flex items-center justify-end gap-4">
+                            <div className="flex items-center justify-end gap-4 flex-wrap w-full">
                                 <select
                                     name="status"
                                     id="status"
@@ -123,15 +127,21 @@ const FairLaunch = () => {
                             <Tabs position="relative" variant="unstyled" isLazy>
                                 <TabList className="whitespace-nowrap gap-3 border-b border-[#3B3939] text-sm">
                                     <Tab
-                                        className="border-b border-[#3B3939] text-[#81878B]" _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} _selected={{ color: '#FFA178'}}
+                                        className="border-b border-[#3B3939] text-[#81878B]" 
+                                        _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
+                                        _selected={{ color: '#FFA178'}}
                                     >
                                         All
                                     </Tab>
-                                    <Tab className="border-b border-[#3B3939]  text-[#81878B]" _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} _selected={{ color: '#FFA178'}}>
+                                    <Tab className="border-b border-[#3B3939]  text-[#81878B]" 
+                                        _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
+                                        _selected={{ color: '#FFA178'}}>
                                         My Contributions
                                     </Tab>
                                     <Tab
-                                        className="border-b border-[#3B3939]  text-[#81878B]" _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} _selected={{ color: '#FFA178'}}
+                                        className="border-b border-[#3B3939]  text-[#81878B]" 
+                                        _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
+                                        _selected={{ color: '#FFA178'}}
                                     >
                                         Created by me
                                     </Tab>
@@ -157,7 +167,7 @@ const FairLaunch = () => {
                                                                     category={"active"}
                                                                     // isLoading={isLoading}
                                                                 />
-                                                            ):(<EmptyState/>)                                              
+                                                            ):(<CollectionList/>)                                              
                                                         }
                                                 {/* </>
                                             )} */}
