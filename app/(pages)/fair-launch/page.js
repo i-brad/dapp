@@ -9,12 +9,14 @@ import {
     TabPanel,
     TabPanels,
     Tabs,
+    useDisclosure,
 } from "@chakra-ui/react";
 import Image from 'next/image';
 import CollectionGrid from '@/app/components/collection/Grid/CollectionGrid';
 import { MdMenu } from 'react-icons/md';
 import EmptyState from '@/app/components/EmptyState';
 import CollectionList from '@/app/components/collection/List/CollectionList';
+import CreateLaunchPad from '@/app/components/Modals/CreateLaunchPad';
 
 const FairLaunch = () => {
     const [viewType, setViewType] = useState(0);
@@ -22,6 +24,12 @@ const FairLaunch = () => {
     const handleChange = (index) => {
         setViewType(index);
     };
+
+    const {
+        isOpen: createPadIsOpen,
+        onOpen: onCreatePadOpen,
+        onClose: onCreatePadClose, 
+    } = useDisclosure();
 
     return (
         <>
@@ -31,13 +39,13 @@ const FairLaunch = () => {
 
                     <div className="text-md  flex flex-row items-center justify-end gap-6  w-full  mt-3 md:mt-0 flex-wrap md:flex-nowrap ">
 
-                        <Link
-                            href={'/fair-launch/create'}
+                        <button 
+                            onClick={onCreatePadOpen}
                             className="w-auto whitespace-nowrap py-3 px-5 bg-[#DA5921] text-white transition ease-in duration-200 text-center text-sm font-semibold shadow-md rounded flex items-center justify-center gap-2 "
                         >
-                            <span><Add size={14}/></span>
+                            <span><Add size={16}/></span>
                             Create new
-                        </Link>
+                        </button>
                     </div>
                 </div>
 
@@ -193,6 +201,11 @@ const FairLaunch = () => {
                 </div>
 
             </div>
+
+            <CreateLaunchPad 
+                isOpen={createPadIsOpen}            
+                onClose={onCreatePadClose}
+            />
         </>
     )
 }

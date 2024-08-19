@@ -37,6 +37,12 @@ export const topMenuLinks = [
     icon: <Coin1 size={16} />,
     isDropdownMenu: false,
   },
+  {
+    label: 'Token',
+    href: '/token',
+    icon: <Coin size={16} />,
+    isDropdownMenu: false,
+  },
 ];
 
 export const bottomMenuLinks = [
