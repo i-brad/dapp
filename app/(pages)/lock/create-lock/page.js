@@ -1,10 +1,21 @@
 'use client'
 import { ArrowLeft } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useState } from 'react'
 
 const CreateLock = () => {
     const router = useRouter();
+
+    const [fileName, setFileName] = useState('');
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+        } else {
+            setFileName('');
+        }
+    };
 
     return (
         <div>
@@ -281,20 +292,50 @@ const CreateLock = () => {
 
                                 <div className="flex flex-col gap-1 relative w-full">
                                     <label
-                                        htmlFor="youtube"
                                         className="text-sm text-[#FFFCFB] mb-1"
                                     >
                                         Upload Logo
                                     </label>
-                                    <input
-                                        type="file"
-                                        id="logo"
-                                        className="block px-2 py-4 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border border-dashed bg-transparent  h-24 rounded-md focus:outline-0 text-center flex items-center justify-center"
-                                        placeholder="For e.g; https://youtube.com"
-                                        name="logo"
-                                        required
-                                        autoComplete="off"
-                                    />
+
+                                    <label 
+                                        htmlFor="logo" 
+                                        className='border-[#464849] border-dashed px-2 py-4 w-full  h-24 border rounded-md flex items-center justify-center cursor-pointer'>
+
+                                        <div>
+                                            <div
+                                                className="text-sm text-[#A8B8C2] text-center">   
+                                                {fileName ? (
+                                                    <div className="text-base text-[#FFA178]">
+                                                        {fileName}
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <div>
+                                                            <span className='text-[#FFA178] '>Upload here</span>
+                                                            <span> or Drag and drop to upload</span>
+                                                        </div>
+                                                        <div className='text-xs text-[#898582]'>
+                                                            <span>PNG, JPG, JPEG</span>
+                                                            <span>. Max 200KB</span>
+                                                        </div>
+                                                    </>
+                                                )}
+
+                                            </div>
+                                        </div>
+
+
+                                    
+                                        <input
+                                            type="file"
+                                            id="logo"
+                                            className="block px-2 py-4 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border border-dashed bg-transparent  h-24 rounded-md focus:outline-0 text-center flex items-center justify-center hidden"
+                                            name="logo"
+                                            required
+                                            accept=".png, .jpg, .jpeg"
+                                            onChange={handleFileChange}
+                                        />
+                                    </label>
                                 </div>
                             </div>
                         </div>
