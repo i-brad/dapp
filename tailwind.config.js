@@ -22,6 +22,16 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)'],
       },
+      keyframes: {
+        moveProgress: {
+          '0%': { transform: 'scaleX(0)', transformOrigin: 'left' },
+          '100%': { transform: 'scaleX(1)', transformOrigin: 'left' },
+        },
+      },
+      animation: {
+        moveProgress: 'moveProgress 1.25s linear forwards',
+      },
+
     },
   },
   plugins: [],

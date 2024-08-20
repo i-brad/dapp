@@ -1,4 +1,5 @@
-import { useState } from 'react';
+"use client"
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -17,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { MdOutlineRadioButtonChecked } from 'react-icons/md';
 import Link from 'next/link';
+import { Checkmark } from '@carbon/icons-react';
 
 const steps = [
   { title: 'Verify Token', description: 'Enter token details or create a token for staking and reward' },
@@ -26,27 +28,26 @@ const steps = [
 
 export default function StepperStake() {
     const [activeStep, setActiveStep] = useState(0);
+    const stepperRef = useRef(null);
+
+    useEffect(() => {
+        if (stepperRef.current) {
+            stepperRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [activeStep]);
+
 
     const handleNext = () => {
-        setActiveStep((prevStep) => prevStep + 1);
+        if (activeStep < steps.length - 1) {
+            setActiveStep((prevStep) => prevStep + 1);
+        }
     };
 
     const handleFinish = () => {
         alert('Finished!');
     };
-
-    //   const renderStepContent = (step) => {
-    //     switch (step) {
-    //       case 0:
-    //         return <Step1 />;
-    //       case 1:
-    //         return <Step2 />;
-    //       case 2:
-    //         return <Step3 />;
-    //       default:
-    //         return <Step1 />;
-    //     }
-    //   };
+    const isActive = (index) => activeStep === index;
+    const isCompleted = (index) => activeStep > index;
 
     const periods = [
         {
@@ -70,77 +71,36 @@ export default function StepperStake() {
 
   return (
     <>
-        <Stack>
-            <Stepper index={activeStep} gap="0" className='max-w-5xl mx-auto w-full'>
+    <div ref={stepperRef}>
+        <div >
+            <div className="flex items-center sm:px-10 md:px-20 mb-3">
                 {steps.map((step, index) => (
-                        <Step key={index}>
-                            <StepIndicator
-                                sx={{
-                                    '[data-status=complete] &': {
-                                        background: 'transparent',
-                                        color: '#FC9569',
-                                        borderWidth: '1px',
-                                        borderColor: '#FC9569',
-                                    },
-                                    '[data-status=active] &': {
-                                        // background: '#FC9569',
-                                        color: '#FC9569',
-                                        borderColor: '#FC9569',
-                                        border: 'none'
-                                    },
-                                    '[data-status=incomplete] &': {
-                                        color: '#575656',
-                                        borderColor: '#575656',
-                                        border: 'none'
-                                    },
-                                }}
-                            >
-                                <StepStatus
-                                    complete={<StepIcon />}
-                                    incomplete={<MdOutlineRadioButtonChecked className='text-lg' height={15}/>}
-                                    active={<MdOutlineRadioButtonChecked />}
-                                />
-                            </StepIndicator>
-
-                            <StepSeparator _horizontal={{ backgroundColor: '#3B3939' }} 
-                                sx={{
-                                    '[data-status=complete] &': {
-                                        background: 'transparent',
-                                        color: '#FC9569',
-                                        borderWidth: '1px',
-                                        borderColor: '#FC9569',
-                                    },
-                                    // '[data-status=active] &': {
-                                    //     // background: '#FC9569',
-                                    //     color: '#FC9569',
-                                    //     borderColor: '#FC9569',
-                                    //     border: 'none'
-                                    // },
-                                    '[data-status=incomplete] &': {
-                                        color: '#3B3939',
-                                        borderColor: '#3B3939',
-                                        backgroundColor: '#3B3939',
-                                        // border: 'none'
-                                    },
-                                }}
-                            />
-                        </Step>
+                    <React.Fragment key={index}>
+                        <span className={`presale-step-shadow size-6 rounded-full border-[1.5px]  flex justify-center items-center ${isCompleted(index) || isActive(index) ? 'border-[#FC9569]' : 'bg-[#3B3939] border-[#212121] '}`}>
+                            {isCompleted(index) ? <Checkmark className='text-[#FC9569]' /> : <span className={`size-2 rounded-full ${ isCompleted(index) || isActive(index) ? 'bg-[#FC9569]': 'bg-[#575656]'}`}></span>}
+                        </span>
+                        {index < steps.length - 1 && (
+                            <span className="h-0.5 bg-[#3B3939] flex-1">
+                                <span
+                                    className={`block h-full ${
+                                        isCompleted(index) ? 'bg-[#c76b4c] animate-moveProgress' : 'bg-[#3B3939]'
+                                    }`}
+                                ></span>
+                            </span>
+                        )}
+                    </React.Fragment>
                 ))}
-            </Stepper>
-
-            <div className=' hidden lg:block max-w-7xl mx-auto w-full'>
-                <div className='flex items-center justify-between text-center'>
-                    {steps.map((step, index) => (
-                        <div key={index} className='flex flex-col gap-2 text-center max-w-xs'>
-                            <p className={`text-base font-medium ${activeStep === index ? 'text-[#EA6A32]' : 'text-white'}`}>{step.title}</p>
-                            <p className='text-[#CCDCDF]'>{step.description}</p>                            
-                        </div>
-                    ))}
-                </div>
             </div>
 
-        </Stack>
-
+            <div class="flex justify-between gap-1">
+                {steps.map((step, index) =>(
+                    <div class="max-w-[190px] text-center false" key={index}>
+                        <p class={`text-[0.625rem] sm:text-sm md:text-base font-medium mb-0.5 ${isActive(index) ? 'text-[#EA6A32]': ''} ${isCompleted(index) ? 'text-white': 'text-[#A8B8C2]'}`}>{step.title}</p>
+                        <p class={`hidden sm:block text-[0.625rem] md:text-sm text-Nebula ${isActive(index) || isCompleted(index) ? 'text-white': 'text-[#A8B8C2]'} `}>{step.description}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
 
         <div className='py-6 md:mt-8'>
 
@@ -691,6 +651,8 @@ export default function StepperStake() {
             </div>
 
         </Box>
+
+        </div>
 
     </>
   );
