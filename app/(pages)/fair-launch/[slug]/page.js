@@ -19,7 +19,13 @@ const SingleLaunchPad = () => {
                 <div className='flex gap-8 py-12 flex-wrap lg:flex-nowrap'>
                     <div className='w-full md:w-full lg:w-7/12 space-y-8'>
 
-                        <div className='bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5'>
+                        <div className='bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5 relative'>
+
+                            <div className='bg-[#353432] text-[#F9C33F] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 absolute right-5 top-5'>
+                                <span className='h-1 w-1 rounded-full bg-[#F9C33F] block'></span>
+                                Upcoming
+                            </div>
+
                             <div className="flex flex-row items-center gap-4">
                                 <div className='relative'>
                                     <div className="w-36">
