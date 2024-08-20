@@ -7,6 +7,21 @@ html{
   overflow-x: hidden !important
 }
 
+/* .range-slider {
+  @apply appearance-none w-full h-2 bg-gray-200 rounded-lg cursor-pointer;
+}
+
+.range-slider::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full;
+}
+
+.range-slider::-moz-range-thumb {
+  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full;
+}
+
+.range-slider::-ms-thumb {
+  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full;
+} */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -46,3 +61,19 @@ input[data-autocompleted] {
 .scrollbar-change::-webkit-scrollbar-thumb:hover {
   background-color: #DA5921;    /* Darker color on hover */
 }
+
+
+.range-slider::-webkit-slider-thumb {
+  background: #DA5921;
+}
+
+.range-slider::-moz-range-thumb {
+  background: #DA5921;
+
+}
+
+.range-slider::-ms-thumb {
+  background: #DA5921;
+
+} 
+
