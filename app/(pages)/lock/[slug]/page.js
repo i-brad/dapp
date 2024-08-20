@@ -101,7 +101,7 @@ const SingleLock = () => {
                             </div>
                             <div>
                                 <h3 className="font-medium text-white text-lg mb-2">
-                                    Token Details
+                                Lock Details
                                 </h3>
 
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">

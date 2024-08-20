@@ -8,7 +8,7 @@ import { Global } from 'iconsax-react'
 const CollectionItem = () => {
   return (
     <>
-        <div className='bg-[#272727] min-h-[350px] p-4 rounded-lg font-medium relative hover:translate-y-[-20px] transition-all duration-300 ease-linear'>
+        <Link href={'/fair-launch/1'} className='bg-[#272727] min-h-[350px] p-4 rounded-lg font-medium relative hover:translate-y-[-20px] transition-all duration-300 ease-linear'>
             <div className='flex flex-col gap-4 justify-between h-full '>
                 <div className='bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 absolute right-2 top-2'>
                     <span className='h-1 w-1 rounded-full bg-[#00FFA3] block'></span>
@@ -75,9 +75,9 @@ const CollectionItem = () => {
 
                 <div className='flex items-end justify-between flex-wrap w-full'>
                     <div className="text-[#A19B99] text-base flex items-center justify-start gap-2 flex-row">
-                        <Link href={`/`} className=' flex items-center justify-center rounded-full'><TwitterIcon2 width={24} height={22}/></Link>
-                        <Link href={`/`} className='flex items-center justify-center rounded-full'><Global size={22}/></Link>
-                        <Link href={`/`} className="flex items-center justify-center rounded-full"><TelegramIcon width={24} height={24}/></Link>
+                        <span className=' flex items-center justify-center rounded-full'><TwitterIcon2 width={24} height={22}/></span>
+                        <span className='flex items-center justify-center rounded-full'><Global size={22}/></span>
+                        <span className="flex items-center justify-center rounded-full"><TelegramIcon width={24} height={24}/></span>
                     </div>
                     <div className='flex items-center justify-end'>
                         <div>
@@ -87,7 +87,7 @@ const CollectionItem = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     </>
   )
 }

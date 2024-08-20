@@ -621,7 +621,7 @@ export default function FairLaunchStepper() {
                                                                     src={"/images/opencampus-edu.png"}
                                                                     alt={"fall-back"}
                                                                     fill
-                                                                    className="rounded-t-[16px] w-full h-full object-cover object-center"
+                                                                    className="w-full h-full object-cover object-center"
                                                                     priority
                                                                 />
                                                             </div>
