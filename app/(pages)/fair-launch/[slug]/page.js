@@ -239,22 +239,22 @@ const SingleLaunchPad = () => {
                                     </h3>
                                 </div>
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    <div class="flex justify-center flex-wrap gap-2.5 md:gap-4">
-                                        <div class="text-center">
-                                            <div class="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">06</div>
-                                            <p class="text-GreyCloud text-xs md:text-sm">Day</p>
+                                    <div className="flex justify-center flex-wrap gap-2.5 md:gap-4">
+                                        <div className="text-center">
+                                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">06</div>
+                                            <p className="text-GreyCloud text-xs md:text-sm">Day</p>
                                         </div>
-                                        <div class="text-center">
-                                            <div class="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">18</div>
-                                            <p class="text-GreyCloud text-xs md:text-sm">Hr</p>
+                                        <div className="text-center">
+                                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">18</div>
+                                            <p className="text-GreyCloud text-xs md:text-sm">Hr</p>
                                         </div>
-                                        <div class="text-center">
-                                            <div class="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">54</div>
-                                            <p class="text-GreyCloud text-xs md:text-sm">Min</p>
+                                        <div className="text-center">
+                                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">54</div>
+                                            <p className="text-GreyCloud text-xs md:text-sm">Min</p>
                                         </div>
-                                        <div class="text-center">
-                                            <div class="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">02</div>
-                                            <p class="text-GreyCloud text-xs md:text-sm">Sec</p>
+                                        <div className="text-center">
+                                            <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">02</div>
+                                            <p className="text-GreyCloud text-xs md:text-sm">Sec</p>
                                         </div>
                                     </div>
                                     

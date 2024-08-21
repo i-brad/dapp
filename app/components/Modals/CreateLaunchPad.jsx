@@ -96,9 +96,9 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                 <a href={'/fair-launch/create'} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] w-full md:max-w-[250px] whitespace-nowrap 
                                     disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                                     transition-all duration-75 border-none px-5 
-                                    font-medium p-3 text-base text-white block"
+                                    font-medium p-3 text-base text-white block text-center"
                                 >
-                                    Continue to create token
+                                    Continue to create launch
                                 </a>
                             </div>
                         </div>

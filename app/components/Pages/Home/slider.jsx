@@ -34,7 +34,7 @@ const MySwiperComponent = () => {
                     </div>
                     <div className="relative mt-8 flex flex-col items-start justify-start gap-2">
                         <div className="flex items-center justify-between text-base z-10">
-                            <Link className="bg-[#DA5921] border border-[#DA5921] text-[#fff] px-5 py-3 text-base rounded-lg" href="/">Create now</Link>
+                            <Link className="bg-[#DA5921] border border-[#DA5921] text-[#fff] px-5 py-3 text-base rounded-lg" href="/fair-launch/create">Create now</Link>
                             <div className="flex items-center">
                                 <Link href="/" className="inline-block w-auto px-2 py-2.5 font-semibold">
                                     <span className="border-b-2 border-gray-300">Read Docs</span>

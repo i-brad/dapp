@@ -97,11 +97,11 @@ export default function AirDropStepper() {
                     ))}
                 </div>
 
-                <div class="flex justify-between gap-1">
+                <div className="flex justify-between gap-1">
                     {steps.map((step, index) =>(
-                        <div class="max-w-[190px] text-center false" key={index}>
-                            <p class={`text-[0.625rem] sm:text-sm md:text-base font-medium mb-0.5 ${isActive(index) ? 'text-[#EA6A32]': ''} ${isCompleted(index) ? 'text-white': 'text-[#A8B8C2]'}`}>{step.title}</p>
-                            <p class={`hidden sm:block text-[0.625rem] md:text-sm text-Nebula ${isActive(index) || isCompleted(index) ? 'text-white': 'text-[#A8B8C2]'} `}>{step.description}</p>
+                        <div className="max-w-[190px] text-center false" key={index}>
+                            <p className={`text-[0.625rem] sm:text-sm md:text-base font-medium mb-0.5 ${isActive(index) ? 'text-[#EA6A32]': ''} ${isCompleted(index) ? 'text-white': 'text-[#A8B8C2]'}`}>{step.title}</p>
+                            <p className={`hidden sm:block text-[0.625rem] md:text-sm text-Nebula ${isActive(index) || isCompleted(index) ? 'text-white': 'text-[#A8B8C2]'} `}>{step.description}</p>
                         </div>
                     ))}
                 </div>
