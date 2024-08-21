@@ -7,16 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
-const SingleLaunchPad = () => {
-    const collection = {
-        presale: "10",
-        liquidity: "20",
-        fixed: "20",
-        unlocked: "10",
-        locked: "20",
-        burnt: "10",
-        staking_rewards: "10"
-    };
+const SingleStake = () => {
 
     const router = useRouter();
     return (
@@ -62,7 +53,7 @@ const SingleLaunchPad = () => {
                                     </div>
                                 </div>
                                 <div className='font-medium flex flex-col gap-2'>
-                                    <span className="text-white text-lg">
+                                    <span className="text-white text-lg uppercase">
                                         SaleFish
                                     </span>
                                     <div className="text-[#A19B99] text-base flex items-center gap-2">
@@ -80,9 +71,9 @@ const SingleLaunchPad = () => {
                             </div>
                             <div>
                                 <p className='text-sm'>
-                                    Salefish is a network and real-world investment corporation and was 
-                                    created on top of the EDUCHAIN network with the aim of creating a community 
-                                    around it that believes in merging the real world with the potential of blockchain.
+                                    Salefish is a network and real-world investment corporation and was created on top of 
+                                    the EDUCHAIN network with the aim of creating a community around it that believes 
+                                    in merging the real world with the potential of blockchain.
                                 </p>
                             </div>
 
@@ -134,30 +125,22 @@ const SingleLaunchPad = () => {
                             </div>
                             <div>
                                 <h3 className="font-medium text-white text-lg mb-2">
-                                Pool info
+                                    Stake Details
                                 </h3>
 
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    <div className="p-2 w-full flex justify-between items-center  flex-wrap">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                        Pool address
-                                        </h3>
-                                        <button type='button' className="font-medium text-[#FFFFFF] text-xs inline-flex gap-1 items-center text-wrap">
-                                            0x7Fefe59726c7c5f4BD7B0224F1FCfA58BAe508fc
-                                            <span className='text-[#898582]'><Copy size={14}/></span>
-                                        </button>
-                                    </div>
+                                    
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                        Token for Presale
+                                        Stake name
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
-                                        10 SAF
+                                        SAF
                                         </span>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                        Soft cap
+                                        Minimum stake 
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
                                             100 EDU
@@ -173,23 +156,7 @@ const SingleLaunchPad = () => {
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                        Presale Rate
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                        1 SOL = 200,000 SAF
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                        Listing Rate
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                        1 SOL = 200,000 SAF
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                        Start time
+                                        Start date
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
                                         Tue, 13 Aug 2024 . 2:00PM
@@ -197,7 +164,7 @@ const SingleLaunchPad = () => {
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                        End time
+                                        End date
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
                                         Tue, 13 Aug 2024 . 2:00PM
@@ -205,18 +172,26 @@ const SingleLaunchPad = () => {
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                        Liquidity percent
+                                        Minimum unstake time
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
-                                        60%
+                                        30 days
                                         </span>
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                        Liquidity Lockup Time
+                                        Reward EDU APY
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
-                                        30 days after pool ends
+                                        4
+                                        </span>
+                                    </div>
+                                    <div className="p-2 w-full flex justify-between items-center">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
+                                        Reward Token APY
+                                        </h3>
+                                        <span className="font-medium text-[#FFFFFF] text-xs">
+                                        60
                                         </span>
                                     </div>
                                     
@@ -225,19 +200,6 @@ const SingleLaunchPad = () => {
                             </div>
 
 
-                        </div>
-                        <div className='bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5'>
-                            <div>
-                                <h3 className="font-medium text-white text-lg mb-2">
-                                Tokenomic
-                                </h3>
-
-                                <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full min-h-72 h-full items-start justify-center">
-                                    <div className='h-full flex items-center  w-full'>
-                                        <TokenChart collection={collection}/>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -293,60 +255,150 @@ const SingleLaunchPad = () => {
                                         </div>
                                         <div>
                                             <h3 className="font-medium text-white text-base mb-3">
-                                                Contribute
+                                            Stake
                                             </h3>
-                                            <div className="flex flex-col gap-1 relative w-full">
-                                                <div className='mb-1 flex items-center justify-between'>
-                                                    <label
-                                                        htmlFor='amount'
-                                                        className="text-sm text-[#FFFCFB] font-medium"
-                                                    >
-                                                    Amount
-                                                    </label>
-                                                    <p className='text-[#898582] text-xs'>Available: <span className='text-[#FFA178]'>300 EDU</span></p>
+                                            <div className='space-y-3'>
+                                                <div className="flex flex-col gap-1 relative w-full">
+                                                    <div className='mb-1 flex items-center justify-between'>
+                                                        <label
+                                                            htmlFor='amount'
+                                                            className="text-sm text-[#FFFCFB] font-medium"
+                                                        >
+                                                        Amount
+                                                        </label>
+                                                        <p className='text-[#898582] text-xs'>Available: <span className='text-[#FFA178]'>300 EDU</span></p>
+                                                    </div>
+
+                                                    <div className=" relative w-full h-12">
+                                                        
+                                                        <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
+                                                            <span className="text-white px-3">
+                                                                <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
+                                                                    <Image
+                                                                        src={"/images/Binance Coin (BNB).svg"}
+                                                                        alt={"fall-back"}
+                                                                        fill
+                                                                        className="w-full h-full object-cover object-center"
+                                                                        priority
+                                                                    />
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                        <input
+                                                            type="number"
+                                                            id="amount"
+                                                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-12 pr-12 h-full text-white"
+                                                            name="amount"
+                                                            defaultValue={5}
+                                                            autoComplete="off"
+                                                        />
+                                                        <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
+                                                            <span className="text-[#FFA178] px-3 font-medium">
+                                                                Max
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
-                                                <div className=" relative w-full h-12">
-                                                    
-                                                    <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
-                                                        <span className="text-white px-3">
-                                                            <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
-                                                                <Image
-                                                                    src={"/images/Binance Coin (BNB).svg"}
-                                                                    alt={"fall-back"}
-                                                                    fill
-                                                                    className="w-full h-full object-cover object-center"
-                                                                    priority
-                                                                />
-                                                            </div>
-                                                        </span>
+                                                <div>
+                                                    <div className='mb-1 flex items-center justify-between'>
+                                                        <label
+                                                            className="text-sm text-[#FFFCFB] font-medium"
+                                                        >
+                                                            Staking period
+                                                        </label>
                                                     </div>
-                                                    <input
-                                                        type="number"
-                                                        id="amount"
-                                                        className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-12 pr-12 h-full text-white"
-                                                        name="amount"
-                                                        defaultValue={5}
-                                                        autoComplete="off"
-                                                    />
-                                                    <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
-                                                        <span className="text-[#FFA178] px-3 font-medium">
-                                                            Max
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <span className='text-xs text-[#00FFA3]'>You will receive 800,000 SAF</span>
 
+                                                    <div className='flex items-center gap-2 justify-center flex-wrap w-full'>
+                                                        <label htmlFor="period_1" className="mr-4 border border-[#464849] px-3 py-[10px] rounded-xl cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                id="period_1"
+                                                                className="mr-2 cursor-pointer"
+                                                                value={1}
+                                                                name="period"
+                                                                required
+                                                                autoComplete="off"
+                                                            />
+                                                            30 days
+                                                        </label>
+                                                        <label htmlFor="period_2"  className="mr-4 border border-[#464849] px-3 py-[10px] rounded-xl cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                id="period_2"
+                                                                className="mr-2 cursor-pointer"
+                                                                value={2}
+                                                                name="period"
+                                                                autoComplete="off"
+                                                            />
+                                                            60 days
+                                                        </label>
+                                                        <label htmlFor="period_3"  className="mr-4 border border-[#464849] px-3 py-[10px] rounded-xl cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                id="period_3"
+                                                                className="mr-2 cursor-pointer"
+                                                                value={3}
+                                                                name="period"
+                                                                autoComplete="off"
+                                                            />
+                                                            90 days
+                                                        </label>
+                                                    </div>
+                                                </div> 
+                                                <div className="flex flex-col gap-1 relative w-full">
+                                                    <div className='mb-1 flex items-center justify-between'>
+                                                        <label
+                                                            htmlFor='amount'
+                                                            className="text-sm text-[#FFFCFB] font-medium"
+                                                        >
+                                                        Staking period
+                                                        </label>
+                                                    </div>
+
+                                                    <div className=" relative w-full h-12">
+                                                        
+                                                        <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
+                                                            <span className="text-white px-3">
+                                                                <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
+                                                                    <Image
+                                                                        src={"/images/Binance Coin (BNB).svg"}
+                                                                        alt={"fall-back"}
+                                                                        fill
+                                                                        className="w-full h-full object-cover object-center"
+                                                                        priority
+                                                                    />
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                        <input
+                                                            type="number"
+                                                            id="amount"
+                                                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-12 pr-12 h-full text-white"
+                                                            name="amount"
+                                                            defaultValue={5}
+                                                            autoComplete="off"
+                                                        />
+                                                        <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
+                                                            <span className="text-[#FFA178] px-3 font-medium">
+                                                                Max
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                             </div>
+
                                         </div>
 
                                         <div className='flex items-center justify-center w-full'>
                                             <button className="bg-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
-                                                disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
+                                                disabled:opacity-50 disabled:cursor-not-allowed rounded-3xl 
                                                 transition-all duration-75 border-none px-5 
-                                                font-medium p-3 text-base text-white block"
+                                                font-medium p-3 text-base text-white block text-center "
                                             >
-                                                Buy SAF
+                                                Stake
                                             </button>
                                         </div>
 
@@ -354,66 +406,17 @@ const SingleLaunchPad = () => {
                                 </div>
                             </div>
                             <div>
+
                                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className="font-medium text-[#898582] text-sm">
-                                            Status
+                                    <div className="py-2 w-full ">
+                                        <h3 className="font-medium text-white text-base">
+                                        Contribution
                                         </h3>
-                                        <span className="font-medium text-[#F3BA2F] text-xs">
-                                            Upcoming
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                            Unsold Token
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                            0 SAF
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                            Minimum buy
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                        1 EDU
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                        Maximum buy
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                        10 EDU
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                        Total Contributors
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                        0
-                                        </span>
-                                    </div>
-                                    <div className="p-2 w-full flex justify-between items-center">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                        Avrge. Contributions
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                        0 EDU
-                                        </span>
                                     </div>
 
-                                </div>
-                            </div>
-
-                            <div>
-                                <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                                    
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className="font-medium text-[#898582] text-sm">
-                                            My Contribution
+                                        My staked amount
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
                                             0 EDU
@@ -421,7 +424,15 @@ const SingleLaunchPad = () => {
                                     </div>
                                     <div className="p-2 w-full flex justify-between items-center">
                                         <h3 className=" font-medium text-[#898582] text-sm">
-                                            My Reserved Tokens
+                                        My withdrawn rewards
+                                        </h3>
+                                        <span className="font-medium text-[#FFFFFF] text-xs">
+                                            0 SAF
+                                        </span>
+                                    </div>
+                                    <div className="p-2 w-full flex justify-between items-center">
+                                        <h3 className=" font-medium text-[#898582] text-sm">
+                                        My withdrawable rewards
                                         </h3>
                                         <span className="font-medium text-[#FFFFFF] text-xs">
                                             0 SAF
@@ -439,4 +450,4 @@ const SingleLaunchPad = () => {
     )
 }
 
-export default SingleLaunchPad
+export default SingleStake

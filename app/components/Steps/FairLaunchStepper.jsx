@@ -35,6 +35,7 @@ import { MoreVertIcon } from '../IconComponent';
 import { motion } from 'framer-motion';
 import { Check } from 'iconsax-react';
 import { Checkmark } from '@carbon/icons-react';
+import NewFairLaunchChart from '../Charts/NewFairLaunchChart';
 
 const steps = [
   { title: 'Verify Token', description: 'Enter token details or create a token' },
@@ -84,6 +85,16 @@ export default function FairLaunchStepper() {
     const isActive = (index) => activeStep === index;
     const isCompleted = (index) => activeStep > index;
 
+    const collection = {
+        presale: "10",
+        liquidity: "20",
+        fixed: "20",
+        unlocked: "10",
+        locked: "20",
+        burnt: "10",
+        staking_rewards: "10"
+    };
+    
     return (
         <>
 
@@ -1029,6 +1040,10 @@ export default function FairLaunchStepper() {
                                                 <h3 className="font-medium text-white text-base">
                                                 Tokenomics score
                                                 </h3>
+                                            </div>
+
+                                            <div>
+                                                <NewFairLaunchChart collection={collection}/>
                                             </div>
                                             {/* <div className="p-2 w-full flex justify-between items-center flex-wrap  gap-1">
                                                 <h3 className=" font-medium text-[#898582] text-sm">

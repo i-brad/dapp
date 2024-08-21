@@ -83,3 +83,32 @@ input[data-autocompleted] {
 
 } 
 
+
+.apexcharts-legend-text {
+  color: #9E9693 !important; /* Change the color here */
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin-left: -4px !important;
+}
+
+.apexcharts-legend{
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr); /* 2 items per row */
+  gap: 2px; /* Space between items */
+}
+
+
+
+/* Mobile styles */
+/* @media (max-width: 768px) {
+  .apexcharts-legend {
+      display: block;
+      text-align: center; 
+      margin-top: 20px; 
+  }
+  
+  .apexcharts-legend-series {
+      display: block;
+      margin-bottom: 10px; 
+  }
+} */

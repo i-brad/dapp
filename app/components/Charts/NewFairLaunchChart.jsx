@@ -8,7 +8,7 @@ const ApexCharts = dynamic(() => import("react-apexcharts"), {
     ssr: false,
 });
 
-const TokenChart = ({ collection }) => {
+const NewFairLaunchChart = ({ collection }) => {
     const [options, setOptions] = useState({
         series: [],
         label: [],
@@ -18,7 +18,7 @@ const TokenChart = ({ collection }) => {
         },
         legend: {
             show: true,
-            position: 'right',
+            position: 'bottom',
             fontSize: '14px',
             fontWeight: 400,
             labels: {
@@ -44,7 +44,8 @@ const TokenChart = ({ collection }) => {
         plotOptions: {
             pie: {
                 // expandOnClick: true,
-                // customScale: 1,
+                expandOnHover: true,
+                // customScale: 0.8,
                 stroke: {
                     show: false,
                     width: 0,
@@ -104,7 +105,6 @@ const TokenChart = ({ collection }) => {
         }
     }, [collection]);
 
-
     return (
         <div className="w-full">
             <div id="chart-timeline" className="border-none w-full">
@@ -113,7 +113,7 @@ const TokenChart = ({ collection }) => {
                         options={options}
                         series={options.series}
                         type="donut"
-                        height={550}
+                        height={450}
                         width="100%"
                     />
                 </div>
@@ -122,4 +122,4 @@ const TokenChart = ({ collection }) => {
     );
 };
 
-export default TokenChart;
+export default NewFairLaunchChart;

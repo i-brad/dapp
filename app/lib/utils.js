@@ -24,3 +24,6 @@ export function shortenAddress(address) {
     const end = address.slice(-4);
     return `${start}.....${end}`;
 }
+
+export const isMobileWidth = (width = 640) =>
+    window.matchMedia(`(max-width:${width}px)`).matches;
