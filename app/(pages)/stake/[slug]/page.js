@@ -346,47 +346,6 @@ const SingleStake = () => {
                                                             90 days
                                                         </label>
                                                     </div>
-                                                </div> 
-                                                <div className="flex flex-col gap-1 relative w-full">
-                                                    <div className='mb-1 flex items-center justify-between'>
-                                                        <label
-                                                            htmlFor='amount'
-                                                            className="text-sm text-[#FFFCFB] font-medium"
-                                                        >
-                                                        Staking period
-                                                        </label>
-                                                    </div>
-
-                                                    <div className=" relative w-full h-12">
-                                                        
-                                                        <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
-                                                            <span className="text-white px-3">
-                                                                <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
-                                                                    <Image
-                                                                        src={"/images/Binance Coin (BNB).svg"}
-                                                                        alt={"fall-back"}
-                                                                        fill
-                                                                        className="w-full h-full object-cover object-center"
-                                                                        priority
-                                                                    />
-                                                                </div>
-                                                            </span>
-                                                        </div>
-                                                        <input
-                                                            type="number"
-                                                            id="amount"
-                                                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-12 pr-12 h-full text-white"
-                                                            name="amount"
-                                                            defaultValue={5}
-                                                            autoComplete="off"
-                                                        />
-                                                        <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
-                                                            <span className="text-[#FFA178] px-3 font-medium">
-                                                                Max
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
                                                 </div>
                                             </div>
 
