@@ -38,7 +38,7 @@ export const topMenuLinks = [
     isDropdownMenu: false,
   },
   {
-    label: 'Create Token',
+    label: 'New Token',
     href: '/token',
     icon: <Coin size={16} />,
     isDropdownMenu: false,
