@@ -45,6 +45,12 @@ input[data-autocompleted] {
   height: 8px;              /* Height of the horizontal scrollbar */
 }
 
+/* Targeting the scrollbar itself */
+.stepper .scrollbar-change::-webkit-scrollbar {
+  width: 8px;               /* Width of the vertical scrollbar */
+  height: 0px;              /* Height of the horizontal scrollbar */
+}
+
 /* Targeting the scrollbar thumb (the draggable part) */
 .scrollbar-change::-webkit-scrollbar-thumb {
   background-color: #888;    /* Color of the thumb */

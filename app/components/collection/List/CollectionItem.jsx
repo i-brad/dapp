@@ -8,7 +8,7 @@ import { Global } from 'iconsax-react'
 const CollectionItem = () => {
   return (
     <>
-        <div className='bg-[#272727] min-h-[150px] p-5 rounded-lg font-medium relative'>
+        <Link href={'/fair-launch/1'} className='bg-[#272727] min-h-[150px] p-5 rounded-lg font-medium relative hover:translate-y-[-20px] transition-all duration-300 ease-linear'>
             <div className='flex flex-col gap-4 justify-between h-full '>
                 
                 <div className='flex items-center justify-between flex-wrap gap-4 pb-4'>
@@ -106,7 +106,7 @@ const CollectionItem = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     </>
   )
 }

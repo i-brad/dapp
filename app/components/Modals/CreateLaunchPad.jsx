@@ -11,12 +11,14 @@ import {
 import Image from 'next/image';
 import { CopyIcon } from '../IconComponent';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const CreateLaunchPad = ({ isOpen, onClose }) => {
     const handleClose = (e) => {
         console.log('here')
         onClose();
     }
+    const router = useRouter()
     return (
         <>
             <Modal isOpen={isOpen} onClose={onClose} isCentered size="4xl">
@@ -84,20 +86,20 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                         The may reduce selling pressure during level. 
                                         Users can stake starting from token sale between 9 months.
                                         </p>
-                                        <Link href={'/lock/create-lock'} className='text-[#F08454] text-base font-medium group-hover:underline'>Create Staking</Link>
+                                        <Link href={'/stake'} className='text-[#F08454] text-base font-medium group-hover:underline'>Create Staking</Link>
                                     </div>
 
                                 </Link>
                             </div>
                                 
                             <div className='flex items-center justify-center w-full mt-4'>
-                                <Link href={'/fair-launch/create'} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] w-full md:max-w-[250px] whitespace-nowrap 
+                                <a href={'/fair-launch/create'} className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] w-full md:max-w-[250px] whitespace-nowrap 
                                     disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                                     transition-all duration-75 border-none px-5 
                                     font-medium p-3 text-base text-white block"
                                 >
                                     Continue to create token
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     </ModalBody>

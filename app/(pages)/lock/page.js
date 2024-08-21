@@ -70,46 +70,41 @@ const Lock = () => {
         <div className='space-y-10'>
           <div className='rounded-[10px] bg-[#272727]'>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 py-3 px-3 w-full divide-y md:divide-y-0 md:divide-x divide-[#524F4D] text-white">
-                <div className='py-4 px-4'>
-                    <div className="w-full flex items-center justify-center flex-col gap-3">
-                        <div className="w-16 h-16 min-h-[50px] relative overflow-hidden featured__card_img block object-contain rounded-full">
-                            <Image
-                                src={"/images/metal-padlocks.svg"}
-                                alt={"fall-back"}
-                                fill
-                                className="rounded-t-[16px] w-full h-full object-contain object-center"
-                                priority
-                            />
-                        </div>
-                        <div className='text-center space-y-1'>
-                          <h3 className='text-xl text-white font-medium'>
-                            800.5M
-                          </h3>
-                          <p className='text-[#CCDCDF] text-sm'>Total Volume Locked</p>
-                        </div>
+                <div className="py-4 px-4 w-full flex items-center justify-center flex-col gap-3">
+                    <div className="w-16 h-16 min-h-[50px] relative overflow-hidden featured__card_img block object-contain rounded-full">
+                        <Image
+                            src={"/images/metal-padlocks.svg"}
+                            alt={"fall-back"}
+                            fill
+                            className="rounded-t-[16px] w-full h-full object-contain object-center"
+                            priority
+                        />
                     </div>
-
+                    <div className='text-center space-y-1'>
+                      <h3 className='text-xl text-white font-medium'>
+                        800.5M
+                      </h3>
+                      <p className='text-[#CCDCDF] text-sm'>Total Volume Locked</p>
+                    </div>
                 </div>
 
-                <div className='py-4 px-4'>
-                    <div className="w-full flex items-center justify-center flex-col gap-3">
-                        <div className="w-16 h-16 min-h-[50px] relative overflow-hidden featured__card_img block object-contain rounded-full">
-                            <Image
-                                src={"/images/metal-padlocks-different.svg"}
-                                alt={"fall-back"}
-                                fill
-                                className="rounded-t-[16px] w-full h-full object-contain object-center"
-                                priority
-                            />
-                        </div>
-                        <div className='text-center space-y-1'>
-                          <h3 className='text-xl text-white font-medium'>
-                            20
-                          </h3>
-                          <p className='text-[#CCDCDF] text-sm'>Locks</p>
-                        </div>
-                    </div>
 
+                <div className="py-4 px-4 w-full flex items-center justify-center flex-col gap-3">
+                    <div className="w-16 h-16 min-h-[50px] relative overflow-hidden featured__card_img block object-contain rounded-full">
+                        <Image
+                            src={"/images/metal-padlocks-different.svg"}
+                            alt={"fall-back"}
+                            fill
+                            className="rounded-t-[16px] w-full h-full object-contain object-center"
+                            priority
+                        />
+                    </div>
+                    <div className='text-center space-y-1'>
+                      <h3 className='text-xl text-white font-medium'>
+                        20
+                      </h3>
+                      <p className='text-[#CCDCDF] text-sm'>Locks</p>
+                    </div>
                 </div>
 
             </div>

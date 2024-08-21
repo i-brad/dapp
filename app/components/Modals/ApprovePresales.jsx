@@ -37,6 +37,7 @@ const ApprovePresales = ({ isOpen, onClose, handleClose, handleCloseSelectPlan }
                                             <Image
                                                 src={"/images/stairs-abstract-geometric-shapes-background.svg"}
                                                 fill
+                                                alt={"fall-back"}
                                                 className="w-full h-full object-contain object-center"
                                                 priority
                                             />
