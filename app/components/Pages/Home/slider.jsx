@@ -27,7 +27,7 @@ const MySwiperComponent = () => {
                     backgroundImage: `url('/images/e7ec75ea0dc3c2bc8fc9b3327a9d7467.jpeg')`
                 }}
                 >
-                <div className='h-full flex flex-col items-start justify-center z-10'>
+                <div className='h-full flex flex-col items-start justify-center'>
                     <div className='space-y-2 z-10'>
                         <h1 className='font-semibold text-3xl text-white'>Fair Token Launchpad and Token Management Protocol</h1>
                         <p className='text-white font-lg'>Thrustpad allows projects organize raise for initial Liquidity, setup staking, create locks and launch token in one place.</p>
@@ -53,7 +53,7 @@ const MySwiperComponent = () => {
                     backgroundImage: `url('/images/e7ec75ea0dc3c2bc8fc9b3327a9d7467.jpeg')`
                 }}
                 >
-                <div className='h-full flex flex-col items-start justify-center z-10'>
+                <div className='h-full flex flex-col items-start justify-center'>
                     <div className='space-y-2 z-10'>
                         <h1 className='font-semibold text-3xl text-white'>Fair Token Launchpad and Token Management Protocol2</h1>
                         <p className='text-white font-lg'>Thrustpad allows projects organize raise for initial Liquidity, setup staking, create locks and launch token in one place.</p>
