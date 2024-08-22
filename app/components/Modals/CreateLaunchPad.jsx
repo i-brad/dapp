@@ -59,7 +59,7 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                             Locker so we can show it on your tokenomics.
                                         </p>
 
-                                        <Link href={'/lock/create-lock'} className='text-[#F08454] text-base font-medium group-hover:underline '>Create Lock</Link>
+                                        <span className='text-[#F08454] text-base font-medium group-hover:underline '>Create Lock</span>
                                     </div>
 
                                 </Link>
@@ -86,7 +86,7 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                         The may reduce selling pressure during level. 
                                         Users can stake starting from token sale between 9 months.
                                         </p>
-                                        <Link href={'/stake'} className='text-[#F08454] text-base font-medium group-hover:underline'>Create Staking</Link>
+                                        <span className='text-[#F08454] text-base font-medium group-hover:underline'>Create Staking</span>
                                     </div>
 
                                 </Link>

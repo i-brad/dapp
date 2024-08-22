@@ -55,7 +55,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder=" "
                                             name="address"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -73,7 +72,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder=" "
                                             name="amount"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -95,7 +93,6 @@ const CreateLock = () => {
                                             placeholder=" "
                                             defaultValue={'0xd....3455'}
                                             name="owner_address"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -113,7 +110,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder=" "
                                             name="lock_date"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -132,7 +128,6 @@ const CreateLock = () => {
                                         className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                         placeholder="Enter a name"
                                         name="lock_name"
-                                        required
                                         autoComplete="off"
                                     />
                                 </div>
@@ -158,7 +153,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder=" "
                                             name="project_title"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -176,7 +170,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder=" "
                                             name="project_description"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -197,7 +190,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder="For e.g; https://..."
                                             name="website"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -214,7 +206,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder="For e.g; https://telegram.com"
                                             name="telegram"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -231,7 +222,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder="For e.g; https://X.com"
                                             name="twitter"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -248,7 +238,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder="For e.g; https://github.com"
                                             name="github"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -265,7 +254,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder="For e.g; https://discord.com"
                                             name="discord"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -282,7 +270,6 @@ const CreateLock = () => {
                                             className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                                             placeholder="For e.g; https://youtube.com"
                                             name="youtube"
-                                            required
                                             autoComplete="off"
                                         />
                                     </div>
@@ -331,7 +318,6 @@ const CreateLock = () => {
                                             id="logo"
                                             className="block px-2 py-4 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border border-dashed bg-transparent  h-24 rounded-md focus:outline-0 text-center flex items-center justify-center hidden"
                                             name="logo"
-                                            required
                                             accept=".png, .jpg, .jpeg"
                                             onChange={handleFileChange}
                                         />

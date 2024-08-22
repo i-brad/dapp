@@ -36,6 +36,7 @@ import { motion } from 'framer-motion';
 import { Check } from 'iconsax-react';
 import { Checkmark } from '@carbon/icons-react';
 import NewFairLaunchChart from '../Charts/NewFairLaunchChart';
+import CustomDropdown from '../CustomDropdown';
 
 const steps = [
   { title: 'Verify Token', description: 'Enter token details or create a token' },
@@ -46,6 +47,7 @@ const steps = [
 export default function FairLaunchStepper() {
     const [activeStep, setActiveStep] = useState(0);
     const [saleVesting, setSaleVesting] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('');
     const stepperRef = useRef(null);
 
     const {
@@ -93,6 +95,17 @@ export default function FairLaunchStepper() {
         locked: "20",
         burnt: "10",
         staking_rewards: "10"
+    };
+
+
+    const items = [
+      { src: '/images/USD-Coin-(USDC).svg', name: 'SailFish' },
+      { src: '/images/USD-Coin-(USDC).svg', name: 'SailFish2' },
+      // Add more options as needed
+    ];
+  
+    const handleSelect = (item) => {
+        console.log('Selected item:', item);
     };
     
     return (
@@ -144,7 +157,7 @@ export default function FairLaunchStepper() {
                                         </Link>
                                 </div>
                                 <div className='flex w-full gap-5 items-center flex-wrap lg:flex-nowrap'>
-                                    <div className="mb-6 flex flex-col gap-1 relative w-full lg:w-1/2">
+                                    {/* <div className="mb-6 flex flex-col gap-1 relative w-full lg:w-1/2">
                                         <label
                                             htmlFor="select_dex"
                                             className="text-sm text-[#FFFCFB] mb-1"
@@ -159,32 +172,15 @@ export default function FairLaunchStepper() {
                                         >
                                             <option value="">Select DEX</option>
                                         </select>
-                                        {/* 
-                                            <Menu size="sm" className='bg-[#464849]'>
-                                                <MenuButton
-                                                    as={IconButton}
-                                                    aria-label="Options"
-                                                    icon={<MoreVertIcon />}
-                                                    className='bg-transparent hover:bg-transparent border border-[#464849]'
-                                                ></MenuButton>
-                                                <MenuList className="px-4 py-4 space-y-3 text-center rounded-2xl bg-[#464849] w-full">
-                                                        <MenuItem className="text-white bg-transparent px-5 py-2 rounded-full font-medium text-center items-center w-full">
-                                                            <span className="w-full text-center">
-                                                                SailFish
-                                                            </span>
-                                                        </MenuItem>
-                                                        <MenuItem
-                                                            className=" px-5 py-2 rounded-full font-medium  items-center gap-1 opacity-30 cursor-not-allowed "
-                                                            disabled
-                                                        >
-                                                            <span className="w-full text-center">
-                                                                Borrow USDC
-                                                            </span>
-                                                        </MenuItem>
-                                                </MenuList>
-                                            </Menu> 
-                                        */}
-
+                                    </div> */}
+                                    <div className="mb-6 flex flex-col gap-1 relative w-full lg:w-1/2">
+                                        <label
+                                            htmlFor="select_dex"
+                                            className="text-sm text-[#FFFCFB] mb-1"
+                                        >
+                                            Select DEX exchange to launch your token on
+                                        </label>
+                                        <CustomDropdown items={items} onSelect={handleSelect} />
                                     </div>
 
                                     <div className="mb-6 flex flex-col gap-1 relative w-full lg:w-1/2">
@@ -289,15 +285,23 @@ export default function FairLaunchStepper() {
                                             </label>
                                             <p className='text-[#898582] text-xs'>Only account that can add, edit presale contract information & unlock liquidity</p>
                                         </div>
-                                        <input
-                                            type="text"
+                                        <div
                                             id="presale_creator"
-                                            className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0"
-                                            placeholder=" "
-                                            name="presale_creator"
-                                            required
-                                            autoComplete="off"
-                                        />
+                                            className="flex items-center gap-2 px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0"
+                                            
+                                        >
+                                            <div className="w-6 h-6 relative overflow-hidden block object-contain rounded-full">
+                                                <Image
+                                                    src={"/images/e447cb96501bff0a8163288ac4aa2c57.jpeg"}
+                                                    alt={'presale creator'}
+                                                    fill
+                                                    className="w-full h-full object-cover object-center"
+                                                    priority
+                                                />
+                                            </div>
+                                            <span>0xd....3455</span>
+                                        </div>
+                                        
                                     </div>
                                 </div>
 
@@ -312,15 +316,33 @@ export default function FairLaunchStepper() {
                                             </label>
                                             <p className='text-[#898582] text-xs'>This is how the token will be listed</p>
                                         </div>
-                                        <input
-                                            type="text"
+                                        <div
                                             id="thrustpad_pair_created"
-                                            className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                                            placeholder=" "
-                                            name="thrustpad_pair_created"
-                                            required
-                                            autoComplete="off"
-                                        />
+                                            className="flex items-center gap-2 px-2 w-full text-sm text-[#9E9794] border-[#464849] border bg-[#3E3D3C]  h-12 rounded-md"
+                                            
+                                        >
+                                            <div className='flex items-center -space-x-2'>
+                                                <div className="w-6 h-6 relative overflow-hidden block object-contain rounded-full">
+                                                    <Image
+                                                        src={"/images/opencampus-edu.png"}
+                                                        alt={'thrustpad_pair_created'}
+                                                        fill
+                                                        className="w-full h-full object-cover object-center"
+                                                        priority
+                                                    />
+                                                </div>
+                                                <div className="w-6 h-6 relative overflow-hidden block object-contain rounded-full">
+                                                    <Image
+                                                        src={"/images/Deenie USD-Coin (USDC).svg"}
+                                                        alt={'thrustpad_pair_created'}
+                                                        fill
+                                                        className="w-full h-full object-cover object-center"
+                                                        priority
+                                                    />
+                                                </div>
+                                            </div>
+                                            <span>EDU / DEENIE</span>
+                                        </div>
                                     </div>
 
                                     <div className="mb-6 flex flex-col gap-1 relative w-full lg:w-1/2">
@@ -549,7 +571,7 @@ export default function FairLaunchStepper() {
                                             id="presale_rate"
                                             className="block px-2 w-full text-sm text-[#FFA178] border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0 font-medium"
                                             placeholder=" "
-                                            value={`1 EDU = 5678623514 DEENIE`}
+                                            defaultValue={`1 EDU = 5678623514 DEENIE`}
                                             name="presale_rate"
                                             autoComplete="off"
                                         />
@@ -570,7 +592,7 @@ export default function FairLaunchStepper() {
                                             id="listing_rate"
                                             className="block px-2 w-full text-sm text-[#FFA178] border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0 font-medium"
                                             placeholder=" "
-                                            value={`1 EDU = 567 DEENIE`}
+                                            defaultValue={`1 EDU = 567 DEENIE`}
                                             name="listing_rate"
                                             autoComplete="off"
                                         />
