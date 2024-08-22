@@ -2,31 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
- 
-html{
-  overflow-x: hidden !important
+html {
+  overflow-x: hidden !important;
 }
 
 /* .range-slider {
-  @apply appearance-none w-full h-2 bg-gray-200 rounded-lg cursor-pointer;
+  @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
 }
 
 .range-slider::-webkit-slider-thumb {
-  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full;
+  @apply w-4 h-4 bg-blue-500 rounded-full appearance-none;
 }
 
 .range-slider::-moz-range-thumb {
-  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full;
+  @apply w-4 h-4 bg-blue-500 rounded-full appearance-none;
 }
 
 .range-slider::-ms-thumb {
-  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full;
+  @apply w-4 h-4 bg-blue-500 rounded-full appearance-none;
 } */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input[type="radio"] {
+  accent-color: #da5921;
 }
 
 input[data-autocompleted] {
@@ -36,19 +39,19 @@ input[data-autocompleted] {
 /* Targeting the scrollbar track */
 .scrollbar-change::-webkit-scrollbar-track {
   background-color: #f4f4f4; /* Background color of the track */
-  border-radius: 10px;       /* Rounding the track corners */
+  border-radius: 10px; /* Rounding the track corners */
 }
 
 /* Targeting the scrollbar itself */
 .scrollbar-change::-webkit-scrollbar {
-  width: 8px;               /* Width of the vertical scrollbar */
-  height: 8px;              /* Height of the horizontal scrollbar */
+  width: 8px; /* Width of the vertical scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
 }
 
 /* Targeting the scrollbar itself */
 .stepper .scrollbar-change::-webkit-scrollbar {
-  width: 8px;               /* Width of the vertical scrollbar */
-  height: 0px;              /* Height of the horizontal scrollbar */
+  width: 8px; /* Width of the vertical scrollbar */
+  height: 0px; /* Height of the horizontal scrollbar */
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -58,8 +61,8 @@ input[data-autocompleted] {
 
 /* Targeting the scrollbar thumb (the draggable part) */
 .scrollbar-change::-webkit-scrollbar-thumb {
-  background-color: #888;    /* Color of the thumb */
-  border-radius: 10px;       /* Rounding the thumb corners */
+  background-color: #888; /* Color of the thumb */
+  border-radius: 10px; /* Rounding the thumb corners */
   border: 2px solid #f4f4f4; /* Adding a border around the thumb */
 }
 
@@ -70,39 +73,33 @@ input[data-autocompleted] {
 
 /* Hover effect for the scrollbar thumb */
 .scrollbar-change::-webkit-scrollbar-thumb:hover {
-  background-color: #DA5921;    /* Darker color on hover */
+  background-color: #da5921; /* Darker color on hover */
 }
 
-
 .range-slider::-webkit-slider-thumb {
-  background: #DA5921;
+  background: #da5921;
 }
 
 .range-slider::-moz-range-thumb {
-  background: #DA5921;
-
+  background: #da5921;
 }
 
 .range-slider::-ms-thumb {
-  background: #DA5921;
-
-} 
-
+  background: #da5921;
+}
 
 .apexcharts-legend-text {
-  color: #9E9693 !important; /* Change the color here */
+  color: #9e9693 !important; /* Change the color here */
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
   margin-left: -4px !important;
 }
 
-.apexcharts-legend{
+.apexcharts-legend {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr); /* 2 items per row */
   gap: 2px; /* Space between items */
 }
-
-
 
 /* Mobile styles */
 /* @media (max-width: 768px) {
