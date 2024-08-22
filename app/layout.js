@@ -38,7 +38,9 @@ export default function RootLayout({ children }) {
                 <Providers>
                     <WagProvider cookie={cookie}>
                         <div className="h-screen flex flex-row justify-start bg-[#212121] text-white relative">
-                            <MainLayout children={children}/>
+                            <MainLayout>
+                                {children}
+                            </MainLayout>
                         </div>
                     </WagProvider>
                 </Providers>
