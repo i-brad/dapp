@@ -35,7 +35,7 @@ const Navbar = ({ isOpen, toggleSidebar }) => {
                     <nav className="flex items-center justify-between py-4 h-full ">
                         <div className="flex items-center gap-4 justify-between">
                             <ToggleButton isOpen={isOpen} toggleSidebar={toggleSidebar}/>
-                            <div className='flex items-center w-auto justify-center h-auto '>
+                            <div className='flex items-center w-auto justify-center h-auto md:hidden'>
                                 <Image
                                     src="/images/logo2.svg"
                                     height={100}
