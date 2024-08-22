@@ -35,8 +35,8 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
 
                             
 
-                            <div className='w-full px-2 flex w-full gap-3 justify-between'>
-                                <Link href={'/lock/create-lock'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group w-1/2'>
+                            <div className='w-full px-2 grid grid-cols-1 md:grid-cols-2 gap-3'>
+                                <Link href={'/lock/create-lock'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group'>
                                     
                                     <div className="flex items-center justify-center w-full">
                                         <div className="w-36 flex h-36 min-h-[100px] relative overflow-hidden featured__card_img block object-contain rounded-full">
@@ -63,7 +63,7 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                     </div>
 
                                 </Link>
-                                <Link href={'/stake'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group w-1/2'>
+                                <Link href={'/stake'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group'>
                                     
                                     <div className="flex items-center justify-center w-full">
                                         <div className="w-36 flex h-36 min-h-[100px] relative overflow-hidden featured__card_img block object-contain rounded-full">
