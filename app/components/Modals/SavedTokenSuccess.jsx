@@ -59,8 +59,9 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
         status: "error",
         duration: 1000,
       });
-    }
+    }finally{
     setLoading(false);
+    }
   };
 
   return (
@@ -108,7 +109,7 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
                   </div>
                 ) : null}
 
-                <div className="w-full px-2 mb-3">
+                <div className="w-full px-2 mb-5">
                   <div className="p-2">
                     <h3 className="text-base font-medium text-white">
                       Token details
@@ -167,17 +168,18 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
                 <div className="flex flex-col justify-between space-y-2 md:flex-row md:space-y-0 md:items-center md:space-x-3">
                   <button
                     type="button"
+                    onClick={addToken}
                     disabled={loading}
                     className="border border-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
                             disabled:opacity-50 disabled:cursor-progress rounded-lg 
-                            transition-all duration-75 border-none px-5 
+                            transition-all duration-75 px-5 
                             font-medium p-3 text-sm text-[#DA5921] hover:text-white block"
                   >
                     {loading ? "Adding to Metamask" : "Add to Metamask"}
                   </button>
                   <Link
                     href={`${process.env.NEXT_PUBLIC_EXPLORER}/tx/${details?.hash}`}
-                    className="bg-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap rounded-lg transition-all duration-75 border-none px-5 font-medium p-3 text-sm text-white block"
+                    className="bg-[#DA5921] text-center hover:bg-[#DA5921] w-full whitespace-nowrap rounded-lg transition-all duration-75 border-none px-5 font-medium p-3 text-sm text-white block"
                   >
                     View on Explorer
                   </Link>
