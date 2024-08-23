@@ -121,7 +121,7 @@ const TokenPage = () => {
         onSuccessTokenOpen();
       }
     } catch (error) {
-      console.error("Error creating token", error);
+      // console.error("Error creating token", error);
 
       const message = error?.message?.split("(")?.[0];
       toast({
