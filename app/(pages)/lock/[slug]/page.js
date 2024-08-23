@@ -1,5 +1,9 @@
 "use client";
-import { TelegramIcon, TwitterIcon2 } from "@/app/components/IconComponent";
+import {
+  TelegramIcon,
+  TwitterIcon2,
+  YoutubeIcon,
+} from "@/app/components/IconComponent";
 import useCountdown from "@/app/hooks/useCountdown";
 import { calculateCompletionPercentage, formatDuration } from "@/app/lib/utils";
 import { LockAbi } from "@/app/providers/abis/lock";
@@ -14,6 +18,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import { FaGithub } from "react-icons/fa";
+import { SiDiscord } from "react-icons/si";
 import { useAccount } from "wagmi";
 import Loading from "./loading";
 
@@ -28,6 +34,8 @@ const SingleLock = () => {
   const [tokenDetails, setTokenDetails] = useState(null);
   const [releasingLock, setReleasingLock] = useState(false);
   const [released, setReleased] = useState(false);
+
+  const { isConnected, address } = useAccount();
 
   const copyHandler = (value) => {
     navigator.clipboard.writeText(value);
@@ -184,15 +192,6 @@ const SingleLock = () => {
                 <div className="flex flex-col gap-2 font-medium">
                   <span className="text-lg text-white">{lock?.lock_name}</span>
                   <div className="text-[#A19B99] text-base flex items-center gap-2">
-                    {lock?.twitter ? (
-                      <Link
-                        target="_blank"
-                        href={`${lock?.twitter}`}
-                        className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
-                      >
-                        <TwitterIcon2 width={22} height={22} />
-                      </Link>
-                    ) : null}
                     {lock?.website ? (
                       <Link
                         target="_blank"
@@ -202,13 +201,50 @@ const SingleLock = () => {
                         <Global size={22} />
                       </Link>
                     ) : null}
+                    {lock?.twitter ? (
+                      <Link
+                        target="_blank"
+                        href={`${lock?.twitter}`}
+                        className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                      >
+                        <TwitterIcon2 width={22} height={22} />
+                      </Link>
+                    ) : null}
+
                     {lock?.telegram ? (
                       <Link
                         target="_blank"
-                        href={`${transaction?.telegram}`}
+                        href={`${lock?.telegram}`}
                         className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
                       >
                         <TelegramIcon />
+                      </Link>
+                    ) : null}
+                    {lock?.youtube ? (
+                      <Link
+                        target="_blank"
+                        href={`${lock?.youtube}`}
+                        className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                      >
+                        <YoutubeIcon />
+                      </Link>
+                    ) : null}
+                    {lock?.discord ? (
+                      <Link
+                        target="_blank"
+                        href={`${lock?.discord}`}
+                        className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                      >
+                        <SiDiscord />
+                      </Link>
+                    ) : null}
+                    {lock?.github ? (
+                      <Link
+                        target="_blank"
+                        href={`${lock?.github}`}
+                        className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                      >
+                        <FaGithub />
                       </Link>
                     ) : null}
                   </div>
@@ -303,7 +339,7 @@ const SingleLock = () => {
                     </h3>
                     <span className="font-medium text-[#FFFFFF] text-xs">
                       {lock?.created_at
-                        ? new Date(lock?.created_at)?.toDateString()
+                        ? new Date(lock?.created_at)?.toLocaleString()
                         : "~"}
                     </span>
                   </div>
@@ -313,7 +349,7 @@ const SingleLock = () => {
                     </h3>
                     <span className="font-medium text-[#FFFFFF] text-xs">
                       {lock?.lock_date
-                        ? new Date(lock?.lock_date)?.toDateString()
+                        ? new Date(lock?.lock_date)?.toLocaleString()
                         : "~"}
                     </span>
                   </div>
@@ -387,29 +423,31 @@ const SingleLock = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center w-full mt-6">
-                    <button
-                      disabled={
-                        days !== 0 ||
-                        hours !== 0 ||
-                        minutes !== 0 ||
-                        seconds !== 0 ||
-                        releasingLock ||
-                        released
-                      }
-                      onClick={withdraw}
-                      className="bg-[#DA5921] hover:bg-[#DA5921] w-full md:w-1/2 whitespace-nowrap 
+                  {isConnected && address === lock?.owner_address ? (
+                    <div className="flex items-center justify-center w-full mt-6">
+                      <button
+                        disabled={
+                          days !== 0 ||
+                          hours !== 0 ||
+                          minutes !== 0 ||
+                          seconds !== 0 ||
+                          releasingLock ||
+                          released
+                        }
+                        onClick={withdraw}
+                        className="bg-[#DA5921] hover:bg-[#DA5921] w-full md:w-1/2 whitespace-nowrap 
                                             disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                                             transition-all duration-75 border-none px-5 
                                             font-medium p-3 text-base text-white block"
-                    >
-                      {releasingLock
-                        ? "Realeasing lock..."
-                        : released
-                        ? "Lock Released"
-                        : "Withdraw Token"}
-                    </button>
-                  </div>
+                      >
+                        {releasingLock
+                          ? "Realeasing lock..."
+                          : released
+                          ? "Lock Released"
+                          : "Withdraw Token"}
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>

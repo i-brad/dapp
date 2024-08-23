@@ -103,15 +103,6 @@ const LocksTable = ({ transactions }) => {
                     </td>
                     <td className="px-5 py-5 text-sm whitespace-nowrap">
                       <div className="text-[#A19B99] text-base flex items-center gap-2 flex-row">
-                        {transaction?.twitter ? (
-                          <Link
-                            target="_blank"
-                            href={`${transaction?.twitter}`}
-                            className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
-                          >
-                            <TwitterIcon2 width={22} height={22} />
-                          </Link>
-                        ) : null}
                         {transaction?.website ? (
                           <Link
                             target="_blank"
@@ -121,6 +112,16 @@ const LocksTable = ({ transactions }) => {
                             <Global size={22} />
                           </Link>
                         ) : null}
+                        {transaction?.twitter ? (
+                          <Link
+                            target="_blank"
+                            href={`${transaction?.twitter}`}
+                            className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                          >
+                            <TwitterIcon2 width={22} height={22} />
+                          </Link>
+                        ) : null}
+
                         {transaction?.telegram ? (
                           <Link
                             target="_blank"

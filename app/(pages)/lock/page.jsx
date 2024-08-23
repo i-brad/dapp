@@ -8,8 +8,28 @@ import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 
 const Lock = () => {
+  const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const getLocks = async () => {
+      try {
+        const response = await fetch("/api/lock");
+        if (response.ok) {
+          const data = await response.json();
+          setTransactions(data?.locks);
+        }
+      } catch (error) {
+        console.error("failed to fetch locks", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getLocks();
+    // setTransactions();
+  }, []);
 
   const filteredTransactions = useMemo(() => {
     if (searchQuery && transactions?.length > 0) {
@@ -23,23 +43,6 @@ const Lock = () => {
     return transactions;
   }, [searchQuery, transactions]);
 
-  useEffect(() => {
-    const getLocks = async () => {
-      try {
-        const response = await fetch("/api/lock");
-        if (response.ok) {
-          const data = await response.json();
-          setTransactions(data?.locks);
-        }
-      } catch (error) {
-        console.error("failed to fetch locks", error);
-      }
-    };
-
-    getLocks();
-    // setTransactions();
-  }, []);
-
   const totalVolume = useMemo(() => {
     if (transactions?.length > 0) {
       const volume = transactions?.reduce((total, item) => {
@@ -50,6 +53,12 @@ const Lock = () => {
     }
     return 0;
   }, [transactions]);
+
+  if (loading) {
+    return (
+      <div className="grid text-white h-dvh place-items-center">Loading...</div>
+    );
+  }
 
   return (
     <>
@@ -126,7 +135,9 @@ const Lock = () => {
                   <h3 className="text-xl font-medium text-white">
                     {transactions?.length || 0}
                   </h3>
-                  <p className="text-[#CCDCDF] text-sm">Locks</p>
+                  <p className="text-[#CCDCDF] text-sm">
+                    {transactions?.length > 1 ? "Locks" : "Lock"}
+                  </p>
                 </div>
               </div>
             </div>

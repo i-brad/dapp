@@ -321,7 +321,7 @@ const CreateLock = () => {
                       htmlFor="website"
                       className="text-sm text-[#FFFCFB] mb-1"
                     >
-                      Website
+                      Website *
                     </label>
                     <input
                       type="url"
