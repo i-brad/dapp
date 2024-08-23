@@ -23,16 +23,10 @@ import Image from 'next/image';
 import './nav.css';
 import { bottomMenuLinks, topMenuLinks } from '@/app/lib/constants';
 
-const Sidebar = ({ user }) => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const pathname = usePathname();
-
-  // const [activeDropdown, setActiveDropdown] = useState(null);
   const [activeDropdowns, setActiveDropdowns] = useState([]);
   const [isDropdown, setIsDropdown] = useState(true);
-
-  const wrapperClasses = classNames(
-    'h-full sidebar pb-4 bg-[#272727] lg:flex justify-between shadow-sm scrollbar-change flex-col overflow-y-auto overflow-x-hidden border-r-[1px] border-[#3B3939] hidden hover:w-56 w-20  z-50 fixed'
-  );
 
   // w-56
 
@@ -44,28 +38,29 @@ const Sidebar = ({ user }) => {
     }
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
 
   return (
     <>
       <div
-        className={wrapperClasses}
+        className={`h-full sidebar pb-4 bg-[#272727] lg:flex justify-between shadow-sm no-scrollbar flex-col overflow-y-auto overflow-x-hidden border-r-[1px] border-[#3B3939] md:hover:w-56 md:w-20 w-56 z-50 fixed md:translate-x-0 ${
+          isOpen ? "translate-x-0 " : "-translate-x-full"
+      }`}
+        
+        onClick={toggleSidebar}
         style={{
-          transition: 'width 500ms ease-in-out ',
+          transition: 'all 500ms ease-in-out ',
         }}
       >
         <div className="flex flex-col">
-          <div className="h-24">
+          <div className="h-16 md:h-24">
             <div className="flex items-center justify-center py-2 border-b  border-[#3B3939]  relative h-full ">
               <div className="px-3 w-full block h-full ">
                 <Link
                   href={'/'}
-                  className="flex"
+                  className="flex gap-2"
                 >
-                  <div className='flex items-center w-20 justify-center h-20'>
+
+                  <div className='flex items-center w-auto md:w-20 justify-center h-auto md:h-20'>
                     <Image
                       src="/images/logo2.svg"
                       height={100}
@@ -76,14 +71,14 @@ const Sidebar = ({ user }) => {
                     />
                   </div>
                   
-                  {/* <Image
+                  <Image
                     src="/images/logo3.svg"
                     height={50}
                     width={50}
-                    className="transition 300ms ease object-contain w-auto h-auto"
+                    className="transition 300ms ease object-contain w-auto h-auto md:hidden block"
                     priority
                     alt="logo"
-                  /> */}
+                  />
                 </Link>
               </div>
             </div>

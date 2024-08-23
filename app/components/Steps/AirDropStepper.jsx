@@ -117,7 +117,7 @@ export default function AirDropStepper() {
                             Choose Airdrop type 
                             </h3>
 
-                            <div className='grid grid-cols-2 w-full gap-5 py-4'>
+                            <div className='grid grid-cols-1 md:grid-cols-2 w-full gap-5 py-4'>
                                 <button onClick={()=>{setAirDropType(1)}} 
                                     className={`bg-transparent border ${airDropType === 1 ? 'border-[#FFA178]': 'border-[#464849]' } hover:border-[#FFA178] rounded-lg flex flex-col text-white py-[14px] px-4 group `}>
                                     <div className="p-2 w-full flex justify-between items-start flex-wrap  gap-3 flex-col text-left">
@@ -200,12 +200,12 @@ export default function AirDropStepper() {
                                     <div className='flex items-center justify-end mb-3'>
                                         <h3 className='text-sm text-[#AFACAB]'>Total Recipients: <span className='text-[#F0EDED] text-lg font-medium'>300</span></h3>
                                     </div>
-                                    <div className='flex gap-4'>
-                                        <div className="flex flex-shrink-0 flex-col gap-1 relative w-full max-w-xs h-full">
+                                    <div className='flex gap-4 items-center flex-wrap lg:flex-nowrap'>
+                                        <div className="flex flex-shrink-0 flex-col gap-1 relative w-full max-w-full md:max-w-xs h-full">
                         
                                             <label 
                                                 htmlFor="logo" 
-                                                className='border-[#464849] border-dashed px-2 py-4 w-full  h-full min-h-96  border rounded-md flex items-center justify-center cursor-pointer'>
+                                                className='border-[#464849] border-dashed px-2 py-4 w-full  h-full min-h-52 md:min-h-96  border rounded-md flex items-center justify-center cursor-pointer'>
 
                                                 <div>
                                                     <div
@@ -225,8 +225,6 @@ export default function AirDropStepper() {
 
                                                     </div>
                                                 </div>
-
-
                                             
                                                 <input
                                                     type="file"

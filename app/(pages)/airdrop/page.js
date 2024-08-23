@@ -51,47 +51,48 @@ const Airdrop = () => {
                     <div className='rounded-lg py-2 mb-5'>
                         <div className='w-full relative shadow-box py-4'>
                             <Tabs position="relative" variant="unstyled" isLazy>
-                                <div className='flex items-center justify-between'>
+                                <div className='flex lg:items-center justify-between flex-wrap lg:flex-row flex-col-reverse gap-2'>
 
-                                <div>
-                                    <TabList className="whitespace-nowrap gap-3 border-b border-[#3B3939] text-sm">
-                                        <Tab
-                                            className="border-b border-[#3B3939] text-[#81878B]" 
-                                            _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
-                                            _selected={{ color: '#FFA178'}}
+                                    <div>
+                                        <TabList className="whitespace-nowrap gap-3 border-b border-[#3B3939] text-sm">
+                                            <Tab
+                                                className="border-b border-[#3B3939] text-[#81878B]" 
+                                                _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
+                                                _selected={{ color: '#FFA178'}}
+                                            >
+                                                All
+                                            </Tab>
+                                            <Tab className="border-b border-[#3B3939]  text-[#81878B]" 
+                                                _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
+                                                _selected={{ color: '#FFA178'}}>
+                                                Eligible airdrop
+                                            </Tab>
+                                            <Tab
+                                                className="border-b border-[#3B3939]  text-[#81878B]" 
+                                                _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
+                                                _selected={{ color: '#FFA178'}}
+                                            >
+                                                Created by me
+                                            </Tab>
+                                        </TabList>
+                                        <TabIndicator
+                                            mt="-1.5px"
+                                            height="2px"
+                                            bg="#FFA178"
+                                            borderRadius="1px"
+                                            className='hidden lg:block'
+                                        />
+                                    </div>
+                                    <div className='flex items-center justify-end'>
+                                        <Link href={'/airdrop/create'} 
+                                            className="max-w-[250px] w-auto whitespace-nowrap py-3 px-5 bg-[#DA5921] text-white transition ease-in duration-200 text-center text-sm font-semibold shadow-md rounded flex items-center justify-center gap-2 "
                                         >
-                                            All
-                                        </Tab>
-                                        <Tab className="border-b border-[#3B3939]  text-[#81878B]" 
-                                            _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
-                                            _selected={{ color: '#FFA178'}}>
-                                            Eligible airdrop
-                                        </Tab>
-                                        <Tab
-                                            className="border-b border-[#3B3939]  text-[#81878B]" 
-                                            _hover={{borderBottomColor: '#FFA178', color: '#FFA178'}} 
-                                            _selected={{ color: '#FFA178'}}
-                                        >
-                                            Created by me
-                                        </Tab>
-                                    </TabList>
-                                    <TabIndicator
-                                        mt="-1.5px"
-                                        height="2px"
-                                        bg="#FFA178"
-                                        borderRadius="1px"
-                                    />
-                                </div>
-                                <div>
-                                    <Link href={'/airdrop/create'} 
-                                        className="w-auto whitespace-nowrap py-3 px-5 bg-[#DA5921] text-white transition ease-in duration-200 text-center text-sm font-semibold shadow-md rounded flex items-center justify-center gap-2 "
-                                    >
-                                        <span>
-                                            <Add size={16}/>
-                                        </span>
-                                        Create airdrop
-                                    </Link>
-                                </div>
+                                            <span className='hidden md:block'>
+                                                <Add size={16}/>
+                                            </span>
+                                            Create airdrop
+                                        </Link>
+                                    </div>
                                 </div>
                                 
                                 <TabPanels>

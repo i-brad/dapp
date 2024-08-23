@@ -35,8 +35,8 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
 
                             
 
-                            <div className='w-full px-2 flex w-full gap-3 justify-between'>
-                                <Link href={'/lock/create-lock'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group w-1/2'>
+                            <div className='w-full px-2 grid grid-cols-1 md:grid-cols-2 gap-3'>
+                                <Link href={'/lock/create-lock'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group'>
                                     
                                     <div className="flex items-center justify-center w-full">
                                         <div className="w-36 flex h-36 min-h-[100px] relative overflow-hidden featured__card_img block object-contain rounded-full">
@@ -59,11 +59,11 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                             Locker so we can show it on your tokenomics.
                                         </p>
 
-                                        <Link href={'/lock/create-lock'} className='text-[#F08454] text-base font-medium group-hover:underline '>Create Lock</Link>
+                                        <span className='text-[#F08454] text-base font-medium group-hover:underline '>Create Lock</span>
                                     </div>
 
                                 </Link>
-                                <Link href={'/stake'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group w-1/2'>
+                                <Link href={'/stake'} className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group'>
                                     
                                     <div className="flex items-center justify-center w-full">
                                         <div className="w-36 flex h-36 min-h-[100px] relative overflow-hidden featured__card_img block object-contain rounded-full">
@@ -86,7 +86,7 @@ const CreateLaunchPad = ({ isOpen, onClose }) => {
                                         The may reduce selling pressure during level. 
                                         Users can stake starting from token sale between 9 months.
                                         </p>
-                                        <Link href={'/stake'} className='text-[#F08454] text-base font-medium group-hover:underline'>Create Staking</Link>
+                                        <span className='text-[#F08454] text-base font-medium group-hover:underline'>Create Staking</span>
                                     </div>
 
                                 </Link>

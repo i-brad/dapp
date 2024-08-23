@@ -33,8 +33,8 @@ const MakePayment = ({ isOpen, onClose }) => {
 
                             
 
-                            <div className='w-full px-2 flex w-full gap-3 justify-between'>
-                                <button className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group w-1/2'>
+                            <div className='w-full px-2 grid grid-cols-1 md:grid-cols-2 gap-3'>
+                                <button className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group'>
                                     <div className="p-2 w-full flex justify-between items-start flex-wrap  gap-3 flex-col text-left">
                                         <span className='text-base font-semibold text-[#F0EDED]'>
                                             Pay with token
@@ -56,7 +56,7 @@ const MakePayment = ({ isOpen, onClose }) => {
                                     </div>
 
                                 </button>
-                                <button className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group w-1/2'>
+                                <button className='bg-[#414040] rounded-lg flex flex-col text-white py-[14px] px-4 group'>
                                     <div className="p-2 w-full flex justify-between items-start flex-wrap gap-3 flex-col text-left">
                                         <span className='text-base font-semibold text-[#F0EDED]'>
                                         Organization level client
