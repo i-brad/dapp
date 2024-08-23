@@ -1,1 +1,9 @@
- hash: response?.hash || ""
+<svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0_3445_10725" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="4" y="3" width="68" height="70">
+<path d="M37.9999 6.3335L46.3171 12.4008L56.6136 12.3818L59.7755 22.1795L68.1165 28.2152L64.9166 38.0002L68.1165 47.7852L59.7755 53.8208L56.6136 63.6185L46.3171 63.5995L37.9999 69.6668L29.6826 63.5995L19.3862 63.6185L16.2243 53.8208L7.8833 47.7852L11.0832 38.0002L7.8833 28.2152L16.2243 22.1795L19.3862 12.3818L29.6826 12.4008L37.9999 6.3335Z" fill="white" stroke="white" stroke-width="6.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26.9165 38.0002L34.8332 45.9168L50.6665 30.0835" stroke="black" stroke-width="6.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</mask>
+<g mask="url(#mask0_3445_10725)">
+<path d="M0 0H76V76H0V0Z" fill="#00FFA3"/>
+</g>
+</svg>
