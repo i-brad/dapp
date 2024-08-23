@@ -54,7 +54,8 @@ const TokenPage = () => {
     const burnable = Boolean(Number(data.get("burnable_token")));
     const renounce_ownership = Boolean(Number(data.get("renounce_ownership")));
 
-    const tokenSupply = ethers.parseEther(supply);
+    // const tokenSupply = ethers.parseEther(supply);
+    const tokenSupply = supply;
     const launchType = {
       mintable,
       pausable,
@@ -90,7 +91,7 @@ const TokenPage = () => {
         launchType
       );
       //   console.log({ response });
-
+      await response.wait();
       if (renounce_ownership && response) {
         const token = new ethers.Contract(token_address, TokenAbi, signer);
 
@@ -185,7 +186,7 @@ const TokenPage = () => {
                     id="token_symbol"
                     minLength={2}
                     className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                    placeholder="For e.g: ETH"
+                    placeholder="For e.g: EDU"
                     name="token_symbol"
                     required
                     autoComplete="off"
@@ -273,9 +274,9 @@ const TokenPage = () => {
                     <label className="text-base text-[#FFFCFB] mr-2">
                       Mintable token
                     </label>
-                    <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
+                    {/* <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
                       <MdQuestionMark size={10} />
-                    </span>
+                    </span> */}
                   </div>
 
                   <div>
@@ -312,9 +313,9 @@ const TokenPage = () => {
                     <label className="text-base text-[#FFFCFB] mr-2">
                       Pausable token
                     </label>
-                    <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
+                    {/* <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
                       <MdQuestionMark size={10} />
-                    </span>
+                    </span> */}
                   </div>
 
                   <div>
@@ -351,9 +352,9 @@ const TokenPage = () => {
                     <label className="text-base text-[#FFFCFB] mr-2">
                       Renounce Ownership
                     </label>
-                    <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
+                    {/* <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
                       <MdQuestionMark size={10} />
-                    </span>
+                    </span> */}
                   </div>
 
                   <div>
@@ -390,9 +391,9 @@ const TokenPage = () => {
                     <label className="text-base text-[#FFFCFB] mr-2">
                       Burnable
                     </label>
-                    <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
+                    {/* <span className="bg-[#5B5958] rounded-full h-4 w-4 flex items-center justify-center">
                       <MdQuestionMark size={10} />
-                    </span>
+                    </span> */}
                   </div>
 
                   <div>
@@ -513,7 +514,7 @@ const TokenPage = () => {
                 Create Token
               </button>
             ) : (
-              <div className="relative flex items-center justify-center z-[999] ">
+              <div className="relative flex items-center max-w-[200px] mx-auto justify-center z-[999] ">
                 <ConnectWallet>
                   <PrimaryButton
                     text="Connect wallet"

@@ -29,6 +29,7 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
 
   const addToken = async () => {
     setLoading(true);
+
     try {
       const provider = await detectEthereumProvider();
       if (!provider) {
@@ -37,30 +38,34 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
           status: "error",
           duration: 1000,
         });
-      } else {
-        await provider.request({
-          method: "eth_requestAccounts",
-        });
-        await provider.request({
-          method: "wallet_watchAsset",
-          params: {
-            type: "ERC20",
-            options: {
-              address: details?.address,
-              symbol: details?.symbol,
-              decimals: details?.decimals,
-            },
-          },
-        });
+        return;
       }
-    } catch {
+
+      // await provider.request({
+      //   method: "eth_requestAccounts",
+      // });
+
+      await provider.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: details?.address,
+            symbol: details?.symbol,
+            decimals: details?.decimals,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error adding token:", error);
       toast({
         message: "Unable to add the token",
         status: "error",
         duration: 1000,
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -108,7 +113,7 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
                   </div>
                 ) : null}
 
-                <div className="w-full px-2 mb-3">
+                <div className="w-full px-2 mb-5">
                   <div className="p-2">
                     <h3 className="text-base font-medium text-white">
                       Token details
@@ -167,17 +172,26 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
                 <div className="flex flex-col justify-between space-y-2 md:flex-row md:space-y-0 md:items-center md:space-x-3">
                   <button
                     type="button"
+                    onClick={addToken}
                     disabled={loading}
-                    className="border border-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
+                    className="flex items-center justify-center space-x-2 border border-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
                             disabled:opacity-50 disabled:cursor-progress rounded-lg 
-                            transition-all duration-75 border-none px-5 
-                            font-medium p-3 text-sm text-[#DA5921] hover:text-white block"
+                            transition-all duration-75 px-5 
+                            font-medium p-3 text-sm text-[#DA5921] hover:text-white"
                   >
-                    {loading ? "Adding to Metamask" : "Add to Metamask"}
+                    <Image
+                      src="/svgs/meta-mask.svg"
+                      alt="Metamask"
+                      width={26.7}
+                      height={26}
+                    />
+                    <span>
+                      {loading ? "Adding to Metamask" : "Add to Metamask"}
+                    </span>
                   </button>
                   <Link
                     href={`${process.env.NEXT_PUBLIC_EXPLORER}/tx/${details?.hash}`}
-                    className="bg-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap rounded-lg transition-all duration-75 border-none px-5 font-medium p-3 text-sm text-white block"
+                    className="bg-[#DA5921] text-center hover:bg-[#DA5921] w-full whitespace-nowrap rounded-lg transition-all duration-75 border-none px-5 font-medium p-3 text-sm text-white block"
                   >
                     View on Explorer
                   </Link>
