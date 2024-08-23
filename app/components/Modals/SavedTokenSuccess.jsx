@@ -62,8 +62,6 @@ const SavedTokenSuccess = ({ details, isOpen, onClose }) => {
         } finally {
             setLoading(false);
         }
-
-        return false;
     };
 
     return (
