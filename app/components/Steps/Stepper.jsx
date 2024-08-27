@@ -23,6 +23,7 @@ import {
     useSteps,
     useToast,
 } from "@chakra-ui/react";
+import { data } from "autoprefixer";
 import { ethers, formatEther, getAddress } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -48,12 +49,22 @@ export default function StepperStake() {
     const stepperRef = useRef(null);
     const [tokenAddress, setTokenAddress] = useState("");
     const [tokenDetails, setTokenDetails] = useState(null);
+    const [socialDetails, setSocialDetails] = useState({
+        website: "",
+        telegram: "",
+        twitter: "",
+        github: "",
+        discord: "",
+        youtube: "",
+    });
     const [dataToSend, setDataToSend] = useState({});
     const [loading, setLoading] = useState(false);
     const toast = useToast();
     const [stakeApproved, setStakeApproved] = useState(false);
     const [stakerAddress, setStakerAddress] = useState("");
     const router = useRouter();
+    const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState("");
 
     useEffect(() => {
         if (stepperRef.current) {
@@ -104,14 +115,10 @@ export default function StepperStake() {
             //save to db
             const savedToDB = await fetch("/api/stake", {
                 method: "POST",
-                body: JSON.stringify({
-                    ...dataToSend,
-                    owner_address: address,
-                    stake_address: stakerAddress,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                body: dataToSend,
+                // headers: {
+                //     "Content-Type": "application/json",
+                // },
             });
 
             if (savedToDB.ok) {
@@ -157,22 +164,26 @@ export default function StepperStake() {
         try {
             setLoading(true);
 
-            console.log(dataToSend?.start_date, dataToSend?.end_date);
-            const currBlockTime = new Date(dataToSend?.start_date) / 1000;
+            console.log(dataToSend.get("srat_date"));
 
-            const futureBlockTime = new Date(dataToSend?.end_date) / 1000;
+            console.log("d-2-s", dataToSend);
+            const currBlockTime = new Date(dataToSend.get("start_date")) / 1000;
+
+            const futureBlockTime = new Date(dataToSend.get("end_date")) / 1000;
 
             const options = {
                 token: tokenAddress, //token
                 startDate: currBlockTime, //start time
                 endDate: futureBlockTime, //end time
-                hardCap: ethers.parseEther(dataToSend?.hard_cap.toString()), //hardcap
-                minTokenStake: ethers.parseEther(dataToSend?.minimum_stake_limit?.toString()), //minimum stake
-                apyEdu: dataToSend?.edu_apy, //eduAPY   cannot be less than 2%
-                apyToken: dataToSend?.token_apy, //tokenAPY cannot be less than 8%
-                rewardPoolToken: ethers.parseEther(dataToSend?.reward_deposit_token.toString()), //total reward pool token,
-                rewardPoolEDU: ethers.parseEther(dataToSend?.reward_deposit_edu.toString()), //total reward pool edu,
-                tokenToEDURate: dataToSend?.stake_rate, //rate meaning 1 edu = 10,000 token : help to calculate reward since no price oracle to get live price
+                hardCap: ethers.parseEther(dataToSend.get("hard_cap")?.toString()), //hardcap
+                minTokenStake: ethers.parseEther(dataToSend.get("minimum_stake_limit")?.toString()), //minimum stake
+                apyEdu: dataToSend.get("edu_apy"), //eduAPY   cannot be less than 2%
+                apyToken: dataToSend.get("token_apy"), //tokenAPY cannot be less than 8%
+                rewardPoolToken: ethers.parseEther(
+                    dataToSend.get("reward_deposit_token")?.toString()
+                ), //total reward pool token,
+                rewardPoolEDU: ethers.parseEther(dataToSend.get("reward_deposit_edu")?.toString()), //total reward pool edu,
+                tokenToEDURate: dataToSend.get("stake_rate"), //rate meaning 1 edu = 10,000 token : help to calculate reward since no price oracle to get live price
             };
 
             const signer = await getEthersSigner(config);
@@ -192,7 +203,9 @@ export default function StepperStake() {
 
                 const token = new ethers.Contract(tokenAddress, TokenAbi, signer);
 
-                const amount = ethers.parseEther(dataToSend?.reward_deposit_token.toString());
+                const amount = ethers.parseEther(
+                    dataToSend.get("reward_deposit_token")?.toString()
+                );
                 const approveToken = await token.approve(StakeFactory, amount);
                 await approveToken.wait();
                 if (approveToken) {
@@ -201,15 +214,16 @@ export default function StepperStake() {
                 return;
             }
 
-            const response = await factory.newStaker(options, {
-                value: options.rewardPoolEDU,
-            });
+            // const response = await factory.newStaker(options, {
+            //     value: options.rewardPoolEDU,
+            // });
 
-            await response.wait();
-         
-            if (response) {
-                await createStakeHandler();
-            }
+            // await response.wait();
+
+            // if (response) {
+
+            await createStakeHandler();
+            // }
         } catch (error) {
             console.error("failed to finish", error);
             const message = error?.message?.split("(")?.[0];
@@ -245,11 +259,20 @@ export default function StepperStake() {
         },
     ];
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        console.log(file);
+        if (file) {
+            setFile(file);
+            setFileName(file.name);
+        } else {
+            setFileName("");
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const data = formDataToObject(formData);
-        console.log({ ...data, ...tokenDetails });
 
         const hard_cap = parseInt(data.hard_cap);
         const token_apy = parseInt(data.token_apy);
@@ -260,22 +283,29 @@ export default function StepperStake() {
         const rewardDepositToken = hard_cap * (token_apy / 100); //8% tokenAPY
         const rewardDepositEdu = (hard_cap * (edu_apy / 100)) / stake_rate; //2% eduAPY
 
-        setDataToSend({
-            ...data,
-            token_name: tokenDetails?.token_name,
-            token_symbol: tokenDetails?.token_symbol,
-            token_address: tokenAddress,
-            token_supply: formatEther(tokenDetails?.total_supply),
-            hard_cap,
-            token_apy,
-            edu_apy,
-            stake_rate,
-            minimum_stake_limit,
-            reward_deposit_edu: rewardDepositEdu,
-            reward_deposit_token: rewardDepositToken,
-            staking_periods: [30, 45, 60, 90],
-        });
+        formData.append("stake_address", stakerAddress);
+        formData.append("owner_address", address);
+        formData.append("token_name", tokenDetails?.token_name);
+        formData.append("token_symbol", tokenDetails?.token_symbol);
+        formData.append("token_address", tokenAddress);
+        formData.append("token_supply", formatEther(tokenDetails?.total_supply));
+        formData.append("hard_cap", hard_cap);
+        formData.append("token_apy", token_apy);
+        formData.append("edu_apy", edu_apy);
+        formData.append("stake_rate", stake_rate);
+        formData.append("minimum_stake_limit", minimum_stake_limit);
+        formData.append("reward_deposit_token", rewardDepositToken);
+        formData.append("reward_deposit_edu", rewardDepositEdu);
+        formData.append("staking_periods", [30, 45, 60, 90]);
+        formData.append("website", socialDetails.website);
+        formData.append("telegram", socialDetails.telegram);
+        formData.append("twitter", socialDetails.twitter);
+        formData.append("github", socialDetails.github);
+        formData.append("discord", socialDetails.discord);
+        formData.append("youtube", socialDetails.youtube);
+        formData.append("logo", file);
 
+        setDataToSend(formData);
         console.log(dataToSend);
         handleNext();
     };
@@ -419,13 +449,215 @@ export default function StepperStake() {
                                         </div>
                                     </div>
                                 </div>
+                                <div>
+                                    <div className="grid w-full grid-cols-2 gap-5 lg:grid-cols-3">
+                                        <div className="relative flex flex-col w-full gap-1 mb-6">
+                                            <label
+                                                htmlFor="website"
+                                                className="text-sm text-[#FFFCFB] mb-1"
+                                            >
+                                                Website *
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="website"
+                                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                                placeholder="For example: https://..."
+                                                name="website"
+                                                onChange={(event) => {
+                                                    const value = event.target.value;
+                                                    setSocialDetails((prev) => ({
+                                                        ...prev,
+                                                        website: value,
+                                                    }));
+                                                }}
+                                                required
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                        <div className="relative flex flex-col w-full gap-1 mb-6">
+                                            <label
+                                                htmlFor="telegram"
+                                                className="text-sm text-[#FFFCFB] mb-1"
+                                            >
+                                                Telegram
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="telegram"
+                                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                                placeholder="For example: https://telegram.com"
+                                                name="telegram"
+                                                autoComplete="off"
+                                                onChange={(event) => {
+                                                    const value = event.target.value;
+                                                    setSocialDetails((prev) => ({
+                                                        ...prev,
+                                                        telegram: value,
+                                                    }));
+                                                }}
+                                                pattern="https://t\.me/[a-zA-Z0-9_]{5,32}"
+                                            />
+                                        </div>
+                                        <div className="relative flex flex-col w-full gap-1 mb-6">
+                                            <label
+                                                htmlFor="twitter"
+                                                className="text-sm text-[#FFFCFB] mb-1"
+                                            >
+                                                Twitter
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="twitter"
+                                                onChange={(event) => {
+                                                    const value = event.target.value;
+                                                    setSocialDetails((prev) => ({
+                                                        ...prev,
+                                                        twitter: value,
+                                                    }));
+                                                }}
+                                                pattern="https://(www\.)?(twitter\.com|x\.com)/[a-zA-Z0-9_]+(/status/[0-9]+)?"
+                                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                                placeholder="For example: https://x.com"
+                                                name="twitter"
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                        <div className="relative flex flex-col w-full gap-1 mb-6">
+                                            <label
+                                                htmlFor="github"
+                                                className="text-sm text-[#FFFCFB] mb-1"
+                                            >
+                                                Github
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="github"
+                                                pattern="https://github\.com/[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)?"
+                                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                                placeholder="For example: https://github.com"
+                                                name="github"
+                                                onChange={(event) => {
+                                                    const value = event.target.value;
+                                                    setSocialDetails((prev) => ({
+                                                        ...prev,
+                                                        github: value,
+                                                    }));
+                                                }}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                        <div className="relative flex flex-col w-full gap-1 mb-6">
+                                            <label
+                                                htmlFor="discord"
+                                                className="text-sm text-[#FFFCFB] mb-1"
+                                            >
+                                                Discord
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="discord"
+                                                pattern="https://(www\.)?discord\.gg/[a-zA-Z0-9]{5,}"
+                                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                                placeholder="For example: https://discord.com"
+                                                name="discord"
+                                                onChange={(event) => {
+                                                    const value = event.target.value;
+                                                    setSocialDetails((prev) => ({
+                                                        ...prev,
+                                                        discord: value,
+                                                    }));
+                                                }}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                        <div className="relative flex flex-col w-full gap-1 mb-6">
+                                            <label
+                                                htmlFor="youtube"
+                                                className="text-sm text-[#FFFCFB] mb-1"
+                                            >
+                                                Youtube
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="youtube"
+                                                pattern="https://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)[a-zA-Z0-9_-]{11}"
+                                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                                placeholder="For example: https://youtube.com"
+                                                name="youtube"
+                                                onChange={(event) => {
+                                                    const value = event.target.value;
+                                                    setSocialDetails((prev) => ({
+                                                        ...prev,
+                                                        youtube: value,
+                                                    }));
+                                                }}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="relative flex flex-col w-full gap-1">
+                                        <label className="text-sm text-[#FFFCFB] mb-1">
+                                            Upload Logo
+                                        </label>
+
+                                        <label
+                                            htmlFor="logo"
+                                            className="border-[#464849] border-dashed px-2 py-4 w-full  h-24 border rounded-md flex items-center justify-center cursor-pointer"
+                                        >
+                                            <div>
+                                                <div className="text-sm text-[#A8B8C2] text-center">
+                                                    {fileName ? (
+                                                        <div className="text-base text-[#FFA178]">
+                                                            {fileName}
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <div>
+                                                                <span className="text-[#FFA178] ">
+                                                                    Upload here
+                                                                </span>
+                                                                <span>
+                                                                    {" "}
+                                                                    or Drag and drop to upload
+                                                                </span>
+                                                            </div>
+                                                            <div className="text-xs text-[#898582]">
+                                                                <span>PNG, JPG, JPEG</span>
+                                                                <span>. Max 200KB</span>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <input
+                                                type="file"
+                                                id="logo"
+                                                className="px-2 py-4 text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border border-dashed bg-transparent rounded-md focus:outline-0 text-center overflow-hidden w-0 opacity-0 h-0"
+                                                name="logo"
+                                                required
+                                                accept=".png, .jpg, .jpeg"
+                                                onChange={(e) => {
+                                                    handleFileChange(e);
+                                                }}
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <div className="flex mt-4 flex-wrap items-center justify-center w-full gap-3">
                                 <button
                                     onClick={handleNext}
                                     type={"button"}
                                     disabled={
-                                        loading || !isConnected || !tokenDetails || !isAddressValid
+                                        loading ||
+                                        !isConnected ||
+                                        !tokenDetails ||
+                                        !isAddressValid ||
+                                        !socialDetails.website ||
+                                        !file
                                     }
                                     className="bg-[#DA5921] disabled:cursor-wait hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
                             disabled:opacity-50 rounded-lg 
@@ -722,7 +954,7 @@ export default function StepperStake() {
                                                     Token name
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.token_name}
+                                                    {dataToSend.get("token_name")}
                                                 </span>
                                             </div>
                                             <div className="flex flex-wrap items-center justify-between w-full gap-1 p-2">
@@ -749,7 +981,9 @@ export default function StepperStake() {
                                                     Total supply
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.token_supply?.toLocaleString()}
+                                                    {dataToSend
+                                                        .get("token_supply")
+                                                        ?.toLocaleString()}
                                                 </span>
                                             </div>
                                         </div>
@@ -766,7 +1000,7 @@ export default function StepperStake() {
                                                     Stake name
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.stake_name}
+                                                    {dataToSend.get("stake_name")}
                                                 </span>
                                             </div>
                                             <div className="flex flex-wrap items-center justify-between w-full gap-1 p-2">
@@ -777,7 +1011,7 @@ export default function StepperStake() {
                                                     type="button"
                                                     className="font-medium text-[#FFFFFF] text-sm font-wrap"
                                                 >
-                                                    {dataToSend?.minimum_stake_limit}{" "}
+                                                    {dataToSend.get("minimum_stake_limit")}{" "}
                                                     {tokenDetails?.token_symbol}
                                                 </button>
                                             </div>
@@ -786,7 +1020,7 @@ export default function StepperStake() {
                                                     Hard cap
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.hard_cap}{" "}
+                                                    {dataToSend.get("hard_cap")}{" "}
                                                     {tokenDetails?.token_symbol}
                                                 </span>
                                             </div>
@@ -795,7 +1029,7 @@ export default function StepperStake() {
                                                     Start date
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.start_date}
+                                                    {dataToSend.get("start_date")}
                                                 </span>
                                             </div>
                                             <div className="flex flex-wrap items-center justify-between w-full gap-1 p-2">
@@ -803,7 +1037,7 @@ export default function StepperStake() {
                                                     End date
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm ">
-                                                    {dataToSend?.end_date}
+                                                    {dataToSend.get("end_date")}
                                                 </span>
                                             </div>
                                             {/* <div className="flex flex-wrap items-center justify-between w-full gap-1 p-2">
@@ -827,7 +1061,7 @@ export default function StepperStake() {
                                                     Reward Pool EDU
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.reward_deposit_edu}
+                                                    {dataToSend.get("reward_deposit_edu")}
                                                 </span>
                                             </div>
                                             <div className="flex flex-wrap items-center justify-between w-full gap-1 p-2">
@@ -835,7 +1069,7 @@ export default function StepperStake() {
                                                     Reward Pool {tokenDetails?.token_symbol}
                                                 </h3>
                                                 <span className="font-medium text-[#FFFFFF] text-sm">
-                                                    {dataToSend?.reward_deposit_token}{" "}
+                                                    {dataToSend.get("reward_deposit_token")}{" "}
                                                 </span>
                                             </div>
                                         </div>

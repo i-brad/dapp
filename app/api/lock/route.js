@@ -113,8 +113,8 @@ export async function POST(request) {
 
     // Upload the image to ImageKit
     const uploadResponse = await imagekit.upload({
-      file: fileBuffer, // Base64 string or file path
-      fileName: `${lock_name}_logo`,
+        file: fileBuffer, // Base64 string or file path
+        fileName: `${lock_name}_logo${new Date().toISOString()}`,
     });
 
     const logo_url = uploadResponse.url;

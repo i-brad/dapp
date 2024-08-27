@@ -56,7 +56,8 @@ const CreateLock = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
-
+        console.log({ data });
+        return;
         const date = new Date();
         const lock_date = new Date(data.get("lock_date") || date.now());
         const lock_amount = data.get("lock_amount");
