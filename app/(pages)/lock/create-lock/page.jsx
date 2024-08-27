@@ -124,7 +124,7 @@ const CreateLock = () => {
       const message = error?.message?.split("(")?.[0];
       toast({
         title: "Error creating lock.",
-        description: message || "FAiled",
+        description: message || "Failed",
         status: "error",
         duration: 2000,
       });

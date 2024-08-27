@@ -61,10 +61,9 @@ export function formatDuration(createdDateString, dateString) {
   );
 
   // Format the result
-  const dayStr = days > 0 ? `${days} day${days !== 1 ? "s" : ""}` : "";
-  const hourStr = hours > 0 ? `${hours} hour${hours !== 1 ? "s" : ""}` : "";
-  const minuteStr =
-    minutes > 0 ? `${minutes} min${minutes !== 1 ? "s" : ""}` : "";
+  const dayStr = days > 0 ? `${days}d` : "";
+  const hourStr = hours > 0 ? `${hours}h` : "";
+  const minuteStr = minutes > 0 ? `${minutes}m` : "";
 
   // Combine the parts, filtering out empty strings and joining with commas
   return [dayStr, hourStr, minuteStr].filter(Boolean).join(", ");
@@ -88,4 +87,14 @@ export function calculateCompletionPercentage(startDate, endDate) {
   const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
 
   return cappedPercentage;
+}
+
+export function formDataToObject(formData) {
+  const object = {};
+
+  formData.forEach((value, key) => {
+    object[key] = value;
+  });
+
+  return object;
 }
