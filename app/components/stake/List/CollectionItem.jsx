@@ -3,14 +3,26 @@ import { Progress } from "@chakra-ui/react";
 import { Global } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 import { TelegramIcon, TwitterIcon2 } from "../../IconComponent";
 
 const CollectionItem = ({ data }) => {
-  const progress = calculateCompletionPercentage(
-    data?.start_date,
-    data?.end_date
-  );
+  const progress = 0;
+
+  const status = useMemo(() => {
+    const now = Date.now();
+    const start_date = new Date(data?.start_date);
+    const end_date = new Date(data?.end_date);
+    if (start_date.getTime() <= now) {
+      return "In Progress";
+    }
+
+    if (now > end_date.getTime()) {
+      return "Ended";
+    }
+    return "Upcoming";
+  }, [data]);
+
   return (
     <>
       <Link
@@ -82,10 +94,17 @@ const CollectionItem = ({ data }) => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2">
-                <span className="h-1 w-1 rounded-full bg-[#00FFA3] block"></span>
-                In Progress
-              </div>
+              {status === "In Progress" || status === "Ended" ? (
+                <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 absolute right-2 top-2">
+                  <span className="h-1 w-1 rounded-full bg-[#00FFA3] block"></span>
+                  {status}
+                </div>
+              ) : (
+                <div className="bg-[#353432] text-[#F9C33F] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 absolute right-5 top-5">
+                  <span className="h-1 w-1 rounded-full bg-[#F9C33F] bstake"></span>
+                  {status}
+                </div>
+              )}
               {/* <div className="text-[#A19B99] text-base flex items-center justify-between gap-2 flex-row">
                 <Link
                   href={`#`}
