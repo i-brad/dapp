@@ -209,6 +209,7 @@ const TokenPage = () => {
                     className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
                     placeholder="For e.g: 8"
                     name="token_decimal"
+                    defaultValue={18}
                     // minLength={6}
                     // maxLength={18}
                     min={6}

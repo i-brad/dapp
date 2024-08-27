@@ -222,7 +222,7 @@ export default function FairLaunchStepper() {
                                                 type="text"
                                                 id="address"
                                                 className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                                                placeholder="For e.g; SDFYJHJLO5465689igDHGJJGYJHG"
+                                                placeholder="For example: 0x83E46e6E193B284d26f7A4B7D865B65952A50Bf2"
                                                 name="address"
                                                 required
                                                 autoComplete="off"
@@ -242,7 +242,7 @@ export default function FairLaunchStepper() {
                                                 type="text"
                                                 id="name"
                                                 className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                                                placeholder="For e.g; SAF Token"
+                                                placeholder="For example: SAF Token"
                                                 name="name"
                                                 required
                                                 autoComplete="off"
@@ -260,7 +260,7 @@ export default function FairLaunchStepper() {
                                                 type="text"
                                                 id="symbol"
                                                 className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                                                placeholder="For e.g; SAF"
+                                                placeholder="For example: SAF"
                                                 name="symbol"
                                                 required
                                                 autoComplete="off"
