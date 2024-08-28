@@ -9,10 +9,12 @@ import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { TelegramIcon, TwitterIcon2 } from "../../IconComponent";
 import Link from "next/link";
+import useCountdown from "@/app/hooks/useCountdown";
 
 const CollectionItem = ({ data }) => {
     const [totalStaked, setTotalStaked] = useState(0);
     const [progress, setProgress] = useState(0);
+    const { days, hours, minutes, seconds } = useCountdown(data?.end_date);
 
     useEffect(() => {
         if (data?.stake_address) {
@@ -54,7 +56,7 @@ const CollectionItem = ({ data }) => {
         <>
             <Link
                 href={`/stake/${data?._id}`}
-                className="bg-[#272727] min-h-[350px] p-4 rounded-lg font-medium relative hover:translate-y-[-20px] transition-all duration-300 ease-linear"
+                className=" bg-[#272727] min-h-[350px] p-4 rounded-lg font-medium relative hover:translate-y-[-20px] transition-all duration-300 ease-linear"
             >
                 <div className="flex flex-col justify-between h-full gap-4 ">
                     {status === "In Progress" || status === "Ended" ? (
@@ -69,7 +71,7 @@ const CollectionItem = ({ data }) => {
                         </div>
                     )}
 
-                    <div className="flex flex-row items-center gap-2">
+                    <div className="mt-2 flex flex-row items-center gap-2">
                         <div className="relative flex flex-row w-20">
                             <div className="w-full h-20 min-h-[50px] relative overflow-hidden featured__card_img block object-contain rounded-full">
                                 <Image
@@ -178,7 +180,8 @@ const CollectionItem = ({ data }) => {
                                     Staking ends in:
                                 </p>
                                 <h4 className="text-[#F0EDED] text-[17px]">
-                                    {formatDuration(data?.created_at, data?.end_date)}
+                                    {/* {formatDuration(data?.created_at, data?.end_date)} */}
+                                    {days}d {hours}h {minutes}m {seconds}s
                                 </h4>
                             </div>
                         </div>

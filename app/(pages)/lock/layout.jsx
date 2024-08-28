@@ -1,5 +1,10 @@
 import React from 'react'
 
+export const metadata = {
+    title: "Token Lock",
+    keyword: ["ThrustPad", "Launchpad", "Lock Token", "Token Locking Platform"],
+};
+
 const layout = ({children}) => {
   return (
     <>

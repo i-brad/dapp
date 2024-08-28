@@ -1,5 +1,10 @@
 import React from 'react'
 
+export const metadata = {
+    title: "Staking",
+    keyword: ["ThrustPad",  "Launchpad", "Stake Token", "Token Staking Platform"],
+};
+
 const layout = ({children}) => {
   return (
     <>

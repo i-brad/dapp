@@ -13,9 +13,10 @@ import { ArrowLeft, Copy, Global } from "iconsax-react";
 import { set } from "mongoose";
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import Loading from "./loading";
+import { timeAgo, getFormattedDate } from "@/app/lib/utils";
 
 const SingleStake = () => {
     const router = useRouter();
@@ -30,6 +31,8 @@ const SingleStake = () => {
     const [staking, setStaking] = useState(false);
     const [totalStaked, setTotalStaked] = useState(0);
     const [progress, setProgress] = useState(0);
+    const [userStakes, setUserStakes] = useState([]);
+    const [userRewards, setUserRewards] = useState([]);
 
     const { isConnected, address } = useAccount();
 
@@ -66,6 +69,8 @@ const SingleStake = () => {
 
     const { days, hours, minutes, seconds } = useCountdown(stake?.end_date);
 
+    const now = new Date().getTime();
+
     useEffect(() => {
         const getStake = async () => {
             try {
@@ -86,7 +91,6 @@ const SingleStake = () => {
     }, [slug]);
 
     useEffect(() => {
-        console.log("staked", stake);
         if (stake) {
             const getTotalStaked = async () => {
                 const signer = await getEthersSigner(config);
@@ -102,10 +106,30 @@ const SingleStake = () => {
                     })
                     .catch((error) => {
                         console.log("Failed to get total staked", error);
+                        console.log("Msg:", error.msg);
                     });
             };
 
+            const getUserStakes = async () => {
+                const signer = await getEthersSigner(config);
+                const staker = new ethers.Contract(stake?.stake_address, StakeAbi, signer);
+                const userStakes = await staker.getStakes(address);
+
+                setUserStakes(userStakes);
+            };
+
+            const getUserRewards = async () => {
+                const signer = await getEthersSigner(config);
+                const staker = new ethers.Contract(stake?.stake_address, StakeAbi, signer);
+                const userRewards = await staker.getClaimableRewards(address);
+
+                setUserRewards(userRewards);
+                console.log("User rewards", userRewards);
+            };
+
             getTotalStaked();
+            getUserStakes();
+            getUserRewards();
         }
     }, [stake]);
 
@@ -116,6 +140,73 @@ const SingleStake = () => {
     if (!loading && !stake) {
         notFound();
     }
+
+    const claimRewards = async (index) => {
+        try {
+            const signer = await getEthersSigner(config);
+            const staker = new ethers.Contract(stake?.stake_address, StakeAbi, signer);
+
+            const response = await staker.claimAvailableRewards(index);
+
+            setUserRewards((prev) => {
+                const rewards = [...prev];
+                rewards[index] = [0, 0];
+                return rewards;
+            });
+
+            setUserStakes((prev) => {
+                console.log("Update cliamable rewards", prev);
+                const userStakes = [...prev];
+                userStakes[index][6] += userRewards?.[index][0];
+                userStakes[index][7] += userRewards?.[index][1];
+
+                return userStakes;
+            });
+
+            if (response) {
+                toast({
+                    title: "Rewards claimed!",
+                    description: `Transaction Hash ${response?.hash}`,
+                    status: "success",
+                    duration: 1000,
+                });
+            }
+        } catch (error) {
+            console.error("Failed to claim rewards", error);
+            toast({
+                title: "Failed to claim rewards",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+            });
+        }
+    };
+
+    const unstake = async (index) => {
+        try {
+            const signer = await getEthersSigner(config);
+            const staker = new ethers.Contract(stake?.stake_address, StakeAbi, signer);
+
+            const response = await staker.unstake(index);
+
+            if (response) {
+                toast({
+                    title: "Unstake successful!",
+                    description: `Transaction Hash ${response?.hash}`,
+                    status: "success",
+                    duration: 1000,
+                });
+            }
+        } catch (error) {
+            console.error("Failed to unstake", error);
+            toast({
+                title: "Failed to unstake",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+            });
+        }
+    };
 
     const directStake = async () => {
         try {
@@ -134,13 +225,8 @@ const SingleStake = () => {
                 await tokenApproval.wait();
             }
 
-            console.log("Staking details:c", stakingAmtEthers, Number(stakingPeriod));
-            console.log(await staker.option());
-            console.log(await signer.provider.getBlock());
-
             const response = await staker.directStake(stakingAmtEthers, Number(stakingPeriod));
 
-            console.log(response);
             if (response) {
                 toast({
                     title: "Stake Successful!",
@@ -153,6 +239,12 @@ const SingleStake = () => {
             }
         } catch (error) {
             console.error("Failed staking", error);
+            toast({
+                title: "Failed to stake",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+            });
         } finally {
             setStaking(false);
         }
@@ -214,15 +306,24 @@ const SingleStake = () => {
                                         {stake?.stake_name}
                                     </span>
                                     <div className="text-[#A19B99] text-base flex items-center gap-2">
-                                        <button className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full">
+                                        <a
+                                            href={stake?.website}
+                                            className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                                        >
                                             <Global size={22} />
-                                        </button>
-                                        <button className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full">
+                                        </a>
+                                        <a
+                                            href={stake?.telegram}
+                                            className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                                        >
                                             <TelegramIcon />
-                                        </button>
-                                        <button className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full">
+                                        </a>
+                                        <a
+                                            href={stake?.twitter}
+                                            className="bg-[#353432] h-10 w-10 flex items-center justify-center rounded-full"
+                                        >
                                             <TwitterIcon2 width={22} height={22} />
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -270,14 +371,6 @@ const SingleStake = () => {
                                             {stake?.token_symbol}
                                         </span>
                                     </div>
-                                    {/* <div className="flex items-center justify-between w-full p-2">
-                                      <h3 className=" font-medium text-[#898582] text-sm">
-                                          Total supply
-                                      </h3>
-                                      <span className="font-medium text-[#FFFFFF] text-xs">
-                                          {stake?.token_supply?.toLocaleString()}
-                                      </span>
-                                  </div> */}
                                 </div>
                             </div>
                             <div>
@@ -430,19 +523,6 @@ const SingleStake = () => {
                                                     </div>
 
                                                     <div className="relative w-full h-12 ">
-                                                        {/* <div className="absolute inset-y-0 left-0 flex items-center h-full pr-1 pointer-events-none">
-                              <span className="px-3 text-white">
-                                <div className="relative object-contain w-5 h-5 overflow-hidden rounded-full bstake">
-                                  <Image
-                                    src={"/images/Binance Coin (BNB).svg"}
-                                    alt={"fall-back"}
-                                    fill
-                                    className="object-cover object-center w-full h-full"
-                                    priority
-                                  />
-                                </div>
-                              </span>
-                            </div> */}
                                                         <input
                                                             type="number"
                                                             id="amount"
@@ -527,38 +607,130 @@ const SingleStake = () => {
                                 </div>
                             </div>
                             <div>
-                                <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
+                                {userStakes.length > 0 && (
                                     <div className="w-full py-2 ">
                                         <h3 className="text-base font-medium text-white">
-                                            Contribution
+                                            Contributions
                                         </h3>
                                     </div>
-
-                                    <div className="flex items-center justify-between w-full p-2">
-                                        <h3 className="font-medium text-[#898582] text-sm">
-                                            My staked amount
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                            0 EDU
-                                        </span>
+                                )}
+                                {userStakes.map((stake, index) => (
+                                    <div
+                                        key={index}
+                                        className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full"
+                                    >
+                                        <table class="table-auto text-lefts text-sm">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Amount</td>
+                                                    <td>
+                                                        {Number(
+                                                            ethers.formatUnits(stake[0])
+                                                        ).toFixed(1)}{" "}
+                                                        {stake?.token_symbol}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Start Date</td>
+                                                    <td>{timeAgo(Number(stake[1]) * 1000)}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Maturity</td>
+                                                    <td>
+                                                        {getFormattedDate(
+                                                            new Date(Number(stake[2]) * 1000)
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Claimed EDU</td>
+                                                    <td>
+                                                        {Number(
+                                                            ethers.formatUnits(stake[6])
+                                                        ).toFixed(4)}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Claimed {stake?.token_symbol}</td>
+                                                    <td>
+                                                        {Number(
+                                                            ethers.formatUnits(stake[7])
+                                                        ).toFixed(4)}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Claimable EDU</td>
+                                                    <td>
+                                                        {userRewards?.[index]
+                                                            ? Number(
+                                                                  ethers.formatUnits(
+                                                                      userRewards?.[index][0]
+                                                                  )
+                                                              ).toFixed(5)
+                                                            : 0}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Claimable {stake?.token_symbol}</td>
+                                                    <td>
+                                                        {" "}
+                                                        {userRewards?.[index]
+                                                            ? Number(
+                                                                  ethers.formatUnits(
+                                                                      userRewards?.[index][1]
+                                                                  )
+                                                              ).toFixed(5)
+                                                            : 0}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <button
+                                                            onClick={() => {
+                                                                if (
+                                                                    userRewards?.[index]?.[0] >
+                                                                        BigInt(0) &&
+                                                                    userRewards?.[index]?.[1] >
+                                                                        BigInt(0)
+                                                                ) {
+                                                                    claimRewards(index);
+                                                                }
+                                                            }}
+                                                            disabled={
+                                                                userRewards?.[index]?.[0] <=
+                                                                    BigInt(0) ||
+                                                                userRewards?.[index]?.[1] <=
+                                                                    BigInt(0)
+                                                            }
+                                                            className="mt-2 bg-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
+                                                disabled:opacity-50 disabled:cursor-not-allowed rounded-3xl 
+                                                transition-all duration-75 border-none px-5 
+                                                text-sm p-1 text-base text-white bstake text-center"
+                                                        >
+                                                            Claim rewards
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            onClick={() => {
+                                                                if (now > Number(stake[2]) * 1000) {
+                                                                    unstake(index);
+                                                                }
+                                                            }}
+                                                            disabled={now < Number(stake[2]) * 1000}
+                                                            className="mt-2 bg-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
+                                                disabled:opacity-50 disabled:cursor-not-allowed rounded-3xl 
+                                                transition-all duration-75 border-none px-5 
+                                                text-sm p-1 text-base text-white bstake text-center "
+                                                        >
+                                                            Unstake
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div className="flex items-center justify-between w-full p-2">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                            My withdrawn rewards
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                            0 {stake?.token_symbol}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center justify-between w-full p-2">
-                                        <h3 className=" font-medium text-[#898582] text-sm">
-                                            My withdrawable rewards
-                                        </h3>
-                                        <span className="font-medium text-[#FFFFFF] text-xs">
-                                            0 {stake?.token_symbol}
-                                        </span>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>

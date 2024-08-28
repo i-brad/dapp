@@ -1,5 +1,10 @@
 import React from 'react'
 
+export const metadata = {
+    title: "Airdrop Campaign",
+    keyword: ["ThrustPad", "Launchpad", "Airdrop Token", "Airdrop Campaign Platform"],
+};
+
 const layout = ({children}) => {
   return (
     <>

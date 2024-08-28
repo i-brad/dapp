@@ -1,13 +1,16 @@
-import React from 'react'
+import React from "react";
 
-const layout = ({children}) => {
-  return (
-    <>
-        <div className='w-full container mx-auto py-4 md:py-12 min-h-[900px]'>
-            {children}
-        </div>
-    </>
-  )
-}
+export const metadata = {
+    title: "Create Token",
+    keyword: ["ThrustPad", "Launchpad", "Create Token Tool", "Token Creation Platform"],
+};
 
-export default layout
+const layout = ({ children }) => {
+    return (
+        <>
+            <div className="w-full container mx-auto py-4 md:py-12 min-h-[900px]">{children}</div>
+        </>
+    );
+};
+
+export default layout;
