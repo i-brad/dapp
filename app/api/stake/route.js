@@ -48,6 +48,31 @@ export async function POST(request) {
             return NextResponse.json({ message: "No file uploaded" }, { status: 400 });
         }
 
+        const token_address = data.get("token_address");
+        const owner_address = data.get("owner_address");
+        const token_name = data.get("token_name");
+        const stake_address = data.get("stake_address");
+        const token_symbol = data.get("token_symbol");
+        const token_supply = data.get("token_supply");
+        const stake_name = data.get("stake_name");
+        const stake_description = data.get("stake_description");
+        const start_date = data.get("start_date");
+        const end_date = data.get("end_date");
+        const stake_rate = data.get("stake_rate");
+        const staking_periods = data.get("staking_periods");
+        const edu_apy = data.get("edu_apy");
+        const token_apy = data.get("token_apy");
+        const hard_cap = data.get("hard_cap");
+        const minimum_stake_limit = data.get("minimum_stake_limit");
+        const reward_deposit_token = data.get("reward_deposit_token");
+        const reward_deposit_edu = data.get("reward_deposit_edu");
+        const website = data.get("website");
+        const telegram = data.get("telegram");
+        const twitter = data.get("twitter");
+        const github = data.get("github");
+        const discord = data.get("discord");
+        const youtube = data.get("youtube");
+
         // Convert the file to a buffer
         const arrayBuffer = await logo.arrayBuffer();
         const fileBuffer = Buffer.from(arrayBuffer);
@@ -58,52 +83,7 @@ export async function POST(request) {
             fileName: `${stake_name}_logo_${new Date().toISOString()}`,
         });
 
-        //props
-        const {
-            token_address,
-            owner_address,
-            token_name,
-            stake_address,
-            token_symbol,
-            token_supply,
-            stake_name,
-            stake_description,
-            start_date,
-            end_date,
-            stake_rate,
-            staking_periods,
-            edu_apy,
-            token_apy,
-            hard_cap,
-            minimum_stake_limit,
-            reward_deposit_token,
-            reward_deposit_edu,
-        } = await request.json();
-
-        return Response.json({
-            message: "Success",
-            data: {
-                token_address,
-                owner_address,
-                token_name,
-                stake_address,
-                token_symbol,
-                token_supply,
-                stake_name,
-                stake_description,
-                start_date,
-                end_date,
-                stake_rate,
-                staking_periods,
-                edu_apy,
-                token_apy,
-                hard_cap,
-                minimum_stake_limit,
-                reward_deposit_token,
-                reward_deposit_edu,
-                logo_url: uploadResponse?.url,
-            },
-        });
+        const logo_url = uploadResponse.url;
 
         if (
             !stake_name ||
@@ -122,7 +102,10 @@ export async function POST(request) {
             !minimum_stake_limit ||
             !token_supply ||
             !reward_deposit_token ||
-            !reward_deposit_edu
+            !reward_deposit_edu ||
+            !logo ||
+            !website ||
+            !owner_address
         ) {
             return NextResponse.json(
                 { message: "Invalid request data" },
@@ -131,6 +114,10 @@ export async function POST(request) {
                 }
             );
         }
+
+        //@dev: Todo
+        //We don't care if they create
+        //multiple stakes with the same name or address
 
         // Check if the stake name or address already exists
         const existingStake = await Stake.findOne({
@@ -156,7 +143,7 @@ export async function POST(request) {
             start_date,
             end_date,
             stake_rate,
-            staking_periods,
+            staking_periods: staking_periods.split(",").map((period) => Number(period)),
             edu_apy,
             token_apy,
             hard_cap,
@@ -164,7 +151,16 @@ export async function POST(request) {
             token_supply,
             reward_deposit_token,
             reward_deposit_edu,
+            logo_url,
+            website,
+            telegram,
+            twitter,
+            github,
+            discord,
+            youtube,
         });
+
+        console.log(newStake);
 
         await newStake.save();
 

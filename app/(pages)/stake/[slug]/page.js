@@ -86,7 +86,7 @@ const SingleStake = () => {
   }, [slug]);
 
   useEffect(() => {
-    console.log("staked");
+    console.log("staked", stake);
     if (stake) {
       const getTotalStaked = async () => {
         const signer = await getEthersSigner(config);
@@ -99,7 +99,6 @@ const SingleStake = () => {
         staker
           .totalStaked()
           .then((response) => {
-            console.log("total staked", response);
             setTotalStaked(Number(formatUnits(response)));
             setProgress(
               (Number(formatUnits(response)) / stake?.hard_cap) * 100
@@ -205,7 +204,7 @@ const SingleStake = () => {
                   <div className="w-36">
                     <div className="w-full flex h-36 min-h-[100px] relative overflow-hidden featured__card_img bstake object-contain rounded-full">
                       <Image
-                        src={"/images/coin.png"}
+                        src={stake?.logo_url}
                         alt={"fall-back"}
                         fill
                         className="rounded-t-[16px] w-full h-full object-cover object-center"

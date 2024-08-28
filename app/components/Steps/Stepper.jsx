@@ -164,11 +164,7 @@ export default function StepperStake() {
         try {
             setLoading(true);
 
-            console.log(dataToSend.get("srat_date"));
-
-            console.log("d-2-s", dataToSend);
             const currBlockTime = new Date(dataToSend.get("start_date")) / 1000;
-
             const futureBlockTime = new Date(dataToSend.get("end_date")) / 1000;
 
             const options = {
@@ -187,43 +183,41 @@ export default function StepperStake() {
             };
 
             const signer = await getEthersSigner(config);
-
             const factory = new ethers.Contract(StakeFactory, StakeFactoryAbi, signer);
 
             console.log({ options });
 
-            if (!stakeApproved) {
-                const byteCode = await factory.getBytecode(options);
-                const salt = await factory.getdeployedStakersLen(address);
-                const staker_address = await factory.getAddressCreate2(byteCode, salt);
+            const byteCode = await factory.getBytecode(options);
+            const salt = await factory.getdeployedStakersLen(address);
+            const stake_address = await factory.getAddressCreate2(byteCode, salt);
 
-                if (staker_address) {
-                    setStakerAddress(staker_address);
-                }
+            console.log("stake_address", stake_address);
+            dataToSend.append("stake_address", stake_address);
+            setStakerAddress(stake_address);
 
-                const token = new ethers.Contract(tokenAddress, TokenAbi, signer);
+            const token = new ethers.Contract(tokenAddress, TokenAbi, signer);
+            const amount = ethers.parseEther(dataToSend.get("reward_deposit_token")?.toString());
+            const allowance = await token.allowance(address, StakeFactory);
 
-                const amount = ethers.parseEther(
-                    dataToSend.get("reward_deposit_token")?.toString()
-                );
+            if (allowance >= amount) {
+                setStakeApproved(true);
+            } else {
                 const approveToken = await token.approve(StakeFactory, amount);
                 await approveToken.wait();
                 if (approveToken) {
                     setStakeApproved(true);
                 }
-                return;
             }
 
-            // const response = await factory.newStaker(options, {
-            //     value: options.rewardPoolEDU,
-            // });
+            const response = await factory.newStaker(options, {
+                value: options.rewardPoolEDU,
+            });
 
-            // await response.wait();
+            await response.wait();
 
-            // if (response) {
-
-            await createStakeHandler();
-            // }
+            if (response) {
+                await createStakeHandler();
+            }
         } catch (error) {
             console.error("failed to finish", error);
             const message = error?.message?.split("(")?.[0];
@@ -274,16 +268,15 @@ export default function StepperStake() {
         event.preventDefault();
         const formData = new FormData(event.target);
 
-        const hard_cap = parseInt(data.hard_cap);
-        const token_apy = parseInt(data.token_apy);
-        const edu_apy = parseInt(data.edu_apy);
-        const stake_rate = parseInt(data.stake_rate);
-        const minimum_stake_limit = parseInt(data.minimum_stake_limit);
+        const hard_cap = parseInt(formData.get("hard_cap"));
+        const token_apy = parseInt(formData.get("token_apy"));
+        const edu_apy = parseInt(formData.get("edu_apy"));
+        const stake_rate = parseInt(formData.get("stake_rate"));
+        const minimum_stake_limit = parseInt(formData.get("minimum_stake_limit"));
 
         const rewardDepositToken = hard_cap * (token_apy / 100); //8% tokenAPY
         const rewardDepositEdu = (hard_cap * (edu_apy / 100)) / stake_rate; //2% eduAPY
 
-        formData.append("stake_address", stakerAddress);
         formData.append("owner_address", address);
         formData.append("token_name", tokenDetails?.token_name);
         formData.append("token_symbol", tokenDetails?.token_symbol);
