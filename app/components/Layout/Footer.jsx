@@ -20,35 +20,28 @@ const Footer = () => {
                     <div className="py-[18px] px-6 bg-[#3D3D3D] rounded-lg">
                         <div className="flex items-start w-full gap-2">
                             <span>
-                                <Danger size={22}/>
+                                <Danger size={22} />
                             </span>
                             <p className="text-sm">
-                                While Thrustpad facilitates project launches, 
-                                we never endorse or encourage investment in any specific project. 
-                                Remember, it's your responsibility to research thoroughly and consult a financial 
-                                professional before making investment decisions. 
-                                We would not be held responsible for any losses.
+                                While Thrustpad facilitates project launches, we never endorse or
+                                encourage investment in any specific project. Remember, it's your
+                                responsibility to research thoroughly and consult a financial
+                                professional before making investment decisions. We would not be
+                                held responsible for any losses.
                             </p>
                         </div>
                     </div>
                     <div className="">
                         <div className="flex items-center  justify-between flex-wrap">
                             <div className="w-full md:w-1/4 flex items-center mb-4 md:mb-0 ">
-                                <Image
-                                    src="/images/logo.svg"
-                                    alt="logo"
-                                    width={200}
-                                    height={150}
-                                />
+                                <Image src="/images/logo.svg" alt="logo" width={200} height={150} />
                             </div>
 
                             <div className="flex justify-end w-full md:w-3/4 flex-wrap gap-3">
-                                <h4>
-                                    Follow Us
-                                </h4>
+                                <h4>Follow Us</h4>
                                 <div className="flex space-x-6">
                                     <Link
-                                        href="/"
+                                        href="https://t.me/Thrustpad"
                                         target="_blank"
                                         className="cursor-pointer"
                                     >
@@ -56,21 +49,16 @@ const Footer = () => {
                                     </Link>
 
                                     <Link
-                                        href="/"
+                                        href="https://x.com/ThrustPad"
                                         target="_blank"
                                         className="cursor-pointer"
                                     >
                                         <TwitterIcon2 className={"w-6 h-6"} />
                                     </Link>
 
-                                    <Link
-                                        href="/"
-                                        target="_blank"
-                                        className="cursor-pointer"
-                                    >
+                                    {/* <Link href="/" target="_blank" className="cursor-pointer">
                                         <FacebookIcon className={"w-6 h-6"} />
-                                    </Link>
-
+                                    </Link> */}
                                 </div>
                             </div>
                         </div>

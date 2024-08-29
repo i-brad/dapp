@@ -46,18 +46,18 @@ export const topMenuLinks = [
 ];
 
 export const bottomMenuLinks = [
-  {
-    label: 'Docs',
-    href: '/docs',
-    icon: <DocumentText size={16} />,
-    isDropdownMenu: false,
-  },
-  {
-    label: 'Support',
-    href: '/support',
-    icon: <Messages size={16} />,
-    isDropdownMenu: false,
-  },
+    {
+        label: "Docs",
+        href: "https://thrustpad.gitbook.io/docs",
+        icon: <DocumentText size={16} />,
+        isDropdownMenu: false,
+    },
+    {
+        label: "Support",
+        href: "https://thrustpad.gitbook.io/docs",
+        icon: <Messages size={16} />,
+        isDropdownMenu: false,
+    },
 ];
 
 

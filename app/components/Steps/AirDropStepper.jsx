@@ -44,6 +44,7 @@ import { getEthersSigner } from "@/app/providers/ethers";
 import { config } from "@/app/providers/wagmi/config";
 import { ethers, formatEther, getAddress } from "ethers";
 import { TokenAbi } from "@/app/providers/abis/token";
+import { toast } from "sonner";
 
 const steps = [
     { title: "Choose type", description: "select the type of airdrop to use" },
@@ -69,6 +70,7 @@ export default function AirDropStepper() {
     const [userTokenBalance, setUserTokenBalance] = useState(0);
     const [insufficientBalance, setInsufficientBalance] = useState(false);
     const { isConnected, address } = useAccount();
+    const router = useRouter();
 
     const {
         isOpen: makePaymentAirdropOpen,
@@ -140,18 +142,28 @@ export default function AirDropStepper() {
         const file = e.target.files[0];
 
         if (file) {
+            console.log("file", file);
             Papa.parse(file, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function (result) {
-                    let validated = result?.data?.filter((item) => {
-                        return isAddress(item.Recipient) && Number(item.Amount) > 0;
+                    console.log("result", result);
+                    if (result.errors.length) {
+                        console.log(result.errors);
+                        toast.error("Invalid CSV file");
+                        setShowLoader(false);
+                    }
+                    let validated = result?.data?.map((item) => {
+                        if (isAddress(item.Address) && Number(item.Amount) > 0) {
+                            return [item.Address, parseEther(item.Amount).toString()];
+                        }
                     });
+                    console.log("validated", validated);
                     if (validated?.length) {
                         setJsonRecipients(validated);
                         const totalTokens = validated.reduce(
-                            (n, { Amount }) => Number(n) + Number(Amount),
+                            (total, [addr, amt]) => total + Number(formatEther(amt)),
                             0
                         );
 
@@ -168,8 +180,55 @@ export default function AirDropStepper() {
         }
     };
 
-    const handleFinish = () => {
-        // onMakePaymentAirdropOpen();
+    const handleFinish = async () => {
+        const data = JSON.stringify({
+            owner_address: address,
+            token_address: tokenAddress,
+            token_name: tokenDetails?.token_name,
+            token_symbol: tokenDetails?.token_symbol,
+            token_total: totalTokens,
+            recipient_total: jsonRecipients.length,
+            airdrop_name: airDropTitle,
+            airdrop_recipients: jsonRecipients,
+            airdrop_address: address,
+        });
+
+        try {
+            setShowLoader(true);
+            //save to db
+            const savedToDB = await fetch("/api/airdrop", {
+                method: "POST",
+                body: data,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (savedToDB.ok) {
+                const newAirdrop = await savedToDB.json();
+
+                console.log("newAirdrop:", newAirdrop);
+                toast({
+                    title: "Airdrop created successfully.",
+                    description: "Users can now start claiming their tokens.",
+                    status: "success",
+                    duration: 2000,
+                });
+
+                router.push("/airdrop");
+            }
+        } catch (error) {
+            console.error("failed to create airdrop", error);
+            toast({
+                title: "Error creating airdrop.",
+                description: "Failed",
+                status: "error",
+                duration: 2000,
+            });
+            setShowLoader(false);
+        } finally {
+            // setShowLoader(false);
+        }
     };
 
     const isActive = (index) => activeStep === index;
@@ -703,16 +762,27 @@ export default function AirDropStepper() {
                             )
                         ) : (
                             <>
-                                {userTokenBalance > parseEther(totalTokens.toString()) && (
+                                {showLoader ? (
                                     <button
-                                        onClick={handleFinish}
                                         className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
                                 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
                                 transition-all duration-75 border-none px-5 
-                                font-medium p-3 text-base text-white block"
+                                font-medium p-3 text-base text-white block flex items-center justify-center"
                                     >
-                                        Create Airdrop
+                                        <LoaderIcon className="animate-spin size-32 text-white inline" />
                                     </button>
+                                ) : (
+                                    userTokenBalance > parseEther(totalTokens.toString()) && (
+                                        <button
+                                            onClick={handleFinish}
+                                            className="bg-[#DA5921] hover:bg-[#DA5921] min-w-[200px] whitespace-nowrap w-full md:w-auto
+                                disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
+                                transition-all duration-75 border-none px-5 
+                                font-medium p-3 text-base text-white block"
+                                        >
+                                            Create Airdrop
+                                        </button>
+                                    )
                                 )}
                             </>
                         )}
