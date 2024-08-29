@@ -32,20 +32,15 @@ const SingleLaunchPad = () => {
   const [launch, setLaunch] = useState(null);
   const [progress, setProgress] = useState(0);
   const [totalSold, setTotalSold] = useState(0);
+  const [myContributions, setContributions] = useState(0);
+  const [totalContributors, setTotalContributors] = useState(0);
   const { isConnected, address } = useAccount();
-
-  //   const { data: myContributions } = useReadContract({
-  //     abi: LaunchAbi,
-  //     address: launch?.launch_address,
-  //     function: "purchaseHistory",
-  //     args: [address],
-  //   });
-
-  //   console.log({ myContributions });
 
   //buy amount
   const [amount, setAmount] = useState(0);
   const [buyingToken, setBuyingToken] = useState(false);
+
+  const [claiming, setClaiming] = useState(false);
 
   const { data } = useBalance({
     address,
@@ -64,8 +59,6 @@ const SingleLaunchPad = () => {
   };
 
   const { days, hours, minutes, seconds } = useCountdown(launch?.end_date);
-
-  const now = new Date().getTime();
 
   useEffect(() => {
     const getLaunch = async () => {
@@ -87,7 +80,7 @@ const SingleLaunchPad = () => {
   }, [slug]);
 
   useEffect(() => {
-    if (launch) {
+    if (launch && address) {
       const getTotalSold = async () => {
         const signer = await getEthersSigner(config);
         const launchContract = new ethers.Contract(
@@ -113,36 +106,24 @@ const SingleLaunchPad = () => {
           });
       };
 
-      //   const getUserLaunch = async () => {
-      //     const signer = await getEthersSigner(config);
-      //     const launch = new ethers.Contract(
-      //       launch?.launch_address,
-      //       LaunchAbi,
-      //       signer
-      //     );
-      //     const userLaunch = await launch.getLaunchs(address);
+      const getContributions = async () => {
+        const signer = await getEthersSigner(config);
+        const launchContract = new ethers.Contract(
+          launch?.launch_address,
+          LaunchAbi,
+          signer
+        );
+        const contributions = await launchContract.purchaseHistory(address);
+        const totalContributors = await launchContract.totalContributors();
 
-      //     setUserLaunch(userLaunchs);
-      //   };
-
-      //   const getUserRewards = async () => {
-      //     const signer = await getEthersSigner(config);
-      //     const launch = new ethers.Contract(
-      //       launch?.launch_address,
-      //       LaunchAbi,
-      //       signer
-      //     );
-      //     const userRewards = await launch.getClaimableRewards(address);
-
-      //     setUserRewards(userRewards);
-      //     console.log("User rewards", userRewards);
-      //   };
+        setContributions(contributions);
+        setTotalContributors(totalContributors);
+      };
 
       getTotalSold();
-      //   getUserLaunch();
-      //   getUserRewards();
+      getContributions();
     }
-  }, [launch]);
+  }, [launch, address]);
 
   const status = useMemo(() => {
     const now = Date.now();
@@ -165,6 +146,46 @@ const SingleLaunchPad = () => {
   if (!loading && !launch) {
     notFound();
   }
+
+  const isClaimToken = status === "Ended" && totalSold >= launch?.soft_cap;
+  const isClaimRefund = status === "Ended" && totalSold < launch?.soft_cap;
+
+  const claimHandler = async () => {
+    try {
+      setClaiming(true);
+      const signer = await getEthersSigner(config);
+
+      const launchContract = new ethers.Contract(
+        launch?.launch_address,
+        LaunchAbi,
+        signer
+      );
+
+      const response = await launchContract.buyToken({
+        value: ethers.parseEther(amount.toString()),
+      });
+
+      if (response) {
+        toast({
+          title: "Purchase Successful!",
+          description: `Transaction Hash ${response?.hash}`,
+          status: "success",
+          duration: 3000,
+        });
+        setAmount(0);
+      }
+    } catch (error) {
+      console.error("Failed purchase", error);
+      toast({
+        title: "Failed to buy token",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+      });
+    } finally {
+      setBuyingToken(false);
+    }
+  };
 
   const buyToken = async () => {
     try {
@@ -505,65 +526,84 @@ const SingleLaunchPad = () => {
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <h3 className="font-medium text-white text-base mb-3">
-                        Contribute
-                      </h3>
-                      <div className="flex flex-col gap-1 relative w-full">
-                        <div className="mb-1 flex items-center justify-between">
-                          <label
-                            htmlFor="amount"
-                            className="text-sm text-[#FFFCFB] font-medium"
-                          >
-                            Amount
-                          </label>
-                          <p className="text-[#898582] text-xs">
-                            Available:{" "}
-                            <span className="text-[#FFA178]">
-                              {balance?.toFixed(3)} EDU
-                            </span>
-                          </p>
-                        </div>
-
-                        <div className=" relative w-full h-12">
-                          <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
-                            <span className="text-white px-3">
-                              <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
-                                <Image
-                                  src={"/images/opencampus-edu.png"}
-                                  alt={"fall-back"}
-                                  fill
-                                  className="w-full h-full object-cover object-center"
-                                  priority
-                                />
-                              </div>
-                            </span>
-                          </div>
-                          <input
-                            type="number"
-                            id="amount"
-                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-12 pr-12 h-full text-white"
-                            name="amount"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            autoComplete="off"
-                          />
-                          <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
-                            <button
-                              onClick={() => setAmount(balance)}
-                              className="text-[#FFA178] px-3 font-medium"
-                            >
-                              Max
-                            </button>
-                          </div>
-                        </div>
-                        <span className="text-xs text-[#00FFA3]">
-                          You will receive{" "}
-                          {(amount * launch?.presale_rate)?.toFixed(3)}{" "}
-                          {launch?.token_symbol}
-                        </span>
+                    {isClaimToken || isClaimRefund ? (
+                      <div className="flex items-center justify-center w-full">
+                        <button
+                          disabled={!isConnected || claiming}
+                          onClick={claimHandler}
+                          className="bg-[#DA5921] hover:bg-[#DA5921] w-full whitespace-nowrap 
+                                                disabled:opacity-50 disabled:cursor-not-allowed rounded-lg 
+                                                transition-all duration-75 border-none px-5 
+                                                font-medium p-3 text-base text-white block"
+                        >
+                          {claiming
+                            ? `Claiming...`
+                            : isClaimRefund
+                            ? "Claim Refund"
+                            : "Claim Token"}
+                        </button>
                       </div>
-                    </div>
+                    ) : (
+                      <div>
+                        <h3 className="font-medium text-white text-base mb-3">
+                          Contribute
+                        </h3>
+                        <div className="flex flex-col gap-1 relative w-full">
+                          <div className="mb-1 flex items-center justify-between">
+                            <label
+                              htmlFor="amount"
+                              className="text-sm text-[#FFFCFB] font-medium"
+                            >
+                              Amount
+                            </label>
+                            <p className="text-[#898582] text-xs">
+                              Available:{" "}
+                              <span className="text-[#FFA178]">
+                                {balance?.toFixed(3)} EDU
+                              </span>
+                            </p>
+                          </div>
+
+                          <div className=" relative w-full h-12">
+                            <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
+                              <span className="text-white px-3">
+                                <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
+                                  <Image
+                                    src={"/images/opencampus-edu.png"}
+                                    alt={"fall-back"}
+                                    fill
+                                    className="w-full h-full object-cover object-center"
+                                    priority
+                                  />
+                                </div>
+                              </span>
+                            </div>
+                            <input
+                              type="number"
+                              id="amount"
+                              className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-12 pr-12 h-full text-white"
+                              name="amount"
+                              value={amount}
+                              onChange={(e) => setAmount(e.target.value)}
+                              autoComplete="off"
+                            />
+                            <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
+                              <button
+                                onClick={() => setAmount(balance)}
+                                className="text-[#FFA178] px-3 font-medium"
+                              >
+                                Max
+                              </button>
+                            </div>
+                          </div>
+                          <span className="text-xs text-[#00FFA3]">
+                            You will receive{" "}
+                            {(amount * launch?.presale_rate)?.toFixed(3)}{" "}
+                            {launch?.token_symbol}
+                          </span>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="flex items-center justify-center w-full">
                       <button
@@ -627,7 +667,7 @@ const SingleLaunchPad = () => {
                       Total Contributors
                     </h3>
                     <span className="font-medium text-[#FFFFFF] text-xs">
-                      0
+                      {totalContributors}
                     </span>
                   </div>
                   <div className="p-2 w-full flex justify-between items-center">
@@ -635,7 +675,7 @@ const SingleLaunchPad = () => {
                       Avg. Contributions
                     </h3>
                     <span className="font-medium text-[#FFFFFF] text-xs">
-                      0 EDU
+                      {totalSold / totalContributors} EDU
                     </span>
                   </div>
                 </div>
@@ -648,7 +688,7 @@ const SingleLaunchPad = () => {
                       My Contribution
                     </h3>
                     <span className="font-medium text-[#FFFFFF] text-xs">
-                      0 EDU
+                      {myContributions} EDU
                     </span>
                   </div>
                   <div className="p-2 w-full flex justify-between items-center">
@@ -656,7 +696,8 @@ const SingleLaunchPad = () => {
                       My Reserved Tokens
                     </h3>
                     <span className="font-medium text-[#FFFFFF] text-xs">
-                      0 {launch?.token_symbol}
+                      {myContributions * launch?.presale_rate}{" "}
+                      {launch?.token_symbol}
                     </span>
                   </div>
                 </div>
