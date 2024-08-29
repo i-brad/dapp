@@ -52,7 +52,7 @@ export const ConnectWallet = ({ children }) => {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="text-white text-[0.625rem] md:text-xs whitespace-nowrap border w-full border-neutral-800 rounded-2xl md:px-4 p-2 md:py-[0.6875rem] bg-eerie-black-3"
+                    className="text-red-500 text-[0.625rem] md:text-xs whitespace-nowrap border w-full border-neutral-800 rounded-2xl md:px-4 p-2 md:py-[0.6875rem] bg-eerie-black-3"
                   >
                     Wrong network
                   </button>
