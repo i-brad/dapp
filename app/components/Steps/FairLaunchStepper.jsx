@@ -7,6 +7,7 @@ import { Box, useDisclosure, useSteps, useToast } from "@chakra-ui/react";
 
 import { formDataToObject, shortenAddress } from "@/app/lib/utils";
 import { LaunchFactoryAbi } from "@/app/providers/abis/launch-factory";
+import { StakeAbi } from "@/app/providers/abis/stake";
 import { LaunchFactory } from "@/app/providers/address";
 import { City, Country, State } from "country-state-city";
 import { ethers, formatEther, formatUnits, getAddress } from "ethers";
@@ -44,12 +45,12 @@ export default function FairLaunchStepper() {
   const { isConnected, address } = useAccount();
   const [activeStep, setActiveStep] = useState(0);
   const [saleVesting, setSaleVesting] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
   const stepperRef = useRef(null);
 
   const [presaleApproved, setPresaleApproved] = useState(false);
 
   const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
   const [presaleAmount, setPresaleAmount] = useState(0);
   const [hardCap, setHardCap] = useState(0);
   const [listingRatePercentage, setListingRatePercentage] = useState(10);
@@ -91,6 +92,16 @@ export default function FairLaunchStepper() {
 
   const { data } = useBalance({
     address,
+    token: tokenAddress,
+  });
+
+  const { data: deadBalance } = useBalance({
+    address: "0x000000000000000000000000000000000000dead",
+    token: tokenAddress,
+  });
+
+  const { data: zeroBalance } = useBalance({
+    address: "0x0000000000000000000000000000000000000000",
     token: tokenAddress,
   });
 
@@ -249,7 +260,7 @@ export default function FairLaunchStepper() {
         signer
       );
 
-      console.log({ options });
+      // console.log({ options });
 
       const byteCode = await factory.getBytecode(options);
       const salt = await factory.getdeployedLaunchesLen(address);
@@ -303,14 +314,15 @@ export default function FairLaunchStepper() {
   const isActive = (index) => activeStep === index;
   const isCompleted = (index) => activeStep > index;
 
-  const collection = {
+  const [collection, setCollection] = useState({
     presale: "0",
     liquidity: "0",
     unlocked: "0",
     locked: "0",
     burnt: "0",
+    staking: "0",
     staking_rewards: "0",
-  };
+  });
 
   const items = [
     { src: "/images/USD-Coin-(USDC).svg", name: "SailFish" },
@@ -326,7 +338,7 @@ export default function FairLaunchStepper() {
     presaleAmount / hardCap +
       ((presaleAmount / hardCap) * listingRatePercentage) / 100 ?? 0;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = formDataToObject(formData);
@@ -334,6 +346,7 @@ export default function FairLaunchStepper() {
     const hard_cap = parseInt(formData.get("hard_cap"));
     const soft_cap = parseInt(formData.get("soft_cap"));
 
+    formData.append("name", name);
     formData.append("description", description);
     formData.append("owner_address", address);
     formData.append("token_name", tokenDetails?.token_name);
@@ -357,11 +370,76 @@ export default function FairLaunchStepper() {
     formData.append("youtube", socialDetails.youtube);
     formData.append("logo", file);
     formData.append("payment_tier", "simple");
-    formData.append("tokenomics", collection);
 
-    setDataToSend(formData);
-    console.log(dataToSend);
-    handleNext();
+    try {
+      setLoading(true);
+      const tokenomics = await fetch(`/api/tokenomics?address=${tokenAddress}`);
+
+      if (tokenomics.ok) {
+        const tokenomicsData = await tokenomics.json();
+        const signer = await getEthersSigner(config);
+
+        const staking = tokenomicsData?.stakeAddresses?.reduce(
+          async (total, address) => {
+            const staker = new ethers.Contract(address, StakeAbi, signer);
+            const totalStaked = await staker.totalStaked();
+            return total + Number(formatUnits(totalStaked));
+          },
+          0
+        );
+
+        const staking_rewards = tokenomicsData?.stakeAddresses?.reduce(
+          async (total, address) => {
+            const staker = new ethers.Contract(address, StakeAbi, signer);
+            const totalRewards = await staker.totalRewardsToken();
+            return total + Number(formatUnits(totalRewards));
+          },
+          0
+        );
+
+        const liquidity = liquidityPercentage * listingRate;
+        const burnt = deadBalance
+          ? Number(formatUnits(deadBalance?.value, deadBalance?.decimals) || 0)
+          : 0 + zeroBalance
+          ? Number(formatUnits(zeroBalance?.value, zeroBalance?.decimals) || 0)
+          : 0;
+
+        const unlocked =
+          Number(formatEther(tokenDetails?.total_supply)) -
+          (Number(presaleAmount) +
+            staking +
+            staking_rewards +
+            liquidity +
+            tokenomicsData?.totalLockAmount || 0 + burnt);
+
+        const collectionData = {
+          presale: Number(presaleAmount),
+          liquidity,
+          locked: tokenomicsData?.totalLockAmount || 0,
+          burnt,
+          staking,
+          staking_rewards,
+          unlocked,
+        };
+
+        setCollection(collectionData);
+
+        formData.append("tokenomics", collectionData);
+        setDataToSend(formData);
+        handleNext();
+      }
+    } catch (error) {
+      // console.error("error", error);
+      const message = error?.message;
+      toast({
+        title: "Error generating tokenomics",
+        description: message || "Failed",
+        status: "error",
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -544,8 +622,10 @@ export default function FairLaunchStepper() {
                       type="text"
                       id="name"
                       className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent disabled:bg-[#3E3D3C] h-12 rounded-md focus:outline-0"
-                      placeholder="For example: SAF Token"
+                      placeholder="For example: SAF Token Launch"
                       name="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       required
                       autoComplete="off"
                     />
@@ -721,7 +801,7 @@ export default function FairLaunchStepper() {
 
                     <div className="relative flex flex-col w-full gap-1">
                       <label className="text-sm text-[#FFFCFB] mb-1">
-                        Upload Logo *
+                        Upload Launch Image *
                       </label>
 
                       <label
@@ -798,22 +878,20 @@ export default function FairLaunchStepper() {
 
           {activeStep === 1 ? (
             <>
-              <form
-                onSubmit={handleSubmit}
-                className="bg-[#272727] px-5 py-4 rounded-lg"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label className="text-sm text-[#FFFCFB] mb-1">
-                          Fund Raising Token
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Token you will raise the liquidity and funding in
-                        </p>
-                      </div>
-                      {/* <input
+              <form onSubmit={handleSubmit}>
+                <div className="bg-[#272727] px-5 py-4 rounded-lg">
+                  <div>
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label className="text-sm text-[#FFFCFB] mb-1">
+                            Fund Raising Token
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Token you will raise the liquidity and funding in
+                          </p>
+                        </div>
+                        {/* <input
                         type="text"
                         id="fund_raising_token"
                         className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
@@ -822,254 +900,255 @@ export default function FairLaunchStepper() {
                         required
                         autoComplete="off"
                       /> */}
-                      <div className="flex items-center justify-between px-2 w-full cursor-not-allowed text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0">
-                        <span className="flex items-center space-x-2">
-                          <Image
-                            src="/images/opencampus-edu.png"
-                            alt="EDU"
-                            className="rounded-full"
-                            width={24}
-                            height={24}
-                          />
-                          <span>EDU</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="presale_creator"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Presale creator
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Only account that can add, edit presale contract
-                          information & unlock liquidity
-                        </p>
-                      </div>
-                      <div
-                        id="presale_creator"
-                        className="flex items-center gap-2 px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0"
-                      >
-                        <div className="relative block object-contain w-6 h-6 overflow-hidden rounded-full">
-                          <Image
-                            src={
-                              "/images/e447cb96501bff0a8163288ac4aa2c57.jpeg"
-                            }
-                            alt={"presale creator"}
-                            fill
-                            className="object-cover object-center w-full h-full"
-                            priority
-                          />
+                        <div className="flex items-center justify-between px-2 w-full cursor-not-allowed text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent h-12 rounded-md focus:outline-0">
+                          <span className="flex items-center space-x-2">
+                            <Image
+                              src="/images/opencampus-edu.png"
+                              alt="EDU"
+                              className="rounded-full"
+                              width={24}
+                              height={24}
+                            />
+                            <span>EDU</span>
+                          </span>
                         </div>
-                        <span>{shortenAddress(address)}</span>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="thrustpad_pair_created"
-                          className="text-sm text-[#FFFCFB] mb-1"
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="presale_creator"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Presale creator
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Only account that can add, edit presale contract
+                            information & unlock liquidity
+                          </p>
+                        </div>
+                        <div
+                          id="presale_creator"
+                          className="flex items-center gap-2 px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0"
                         >
-                          SailFish pair created
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          This is how the token will be listed
-                        </p>
-                      </div>
-                      <div
-                        id="thrustpad_pair_created"
-                        className="flex items-center gap-2 px-2 w-full text-sm text-[#9E9794] border-[#464849] border bg-[#3E3D3C]  h-12 rounded-md"
-                      >
-                        <div className="flex items-center -space-x-2">
                           <div className="relative block object-contain w-6 h-6 overflow-hidden rounded-full">
                             <Image
-                              src={"/images/opencampus-edu.png"}
-                              alt={"thrustpad_pair_created"}
+                              src={
+                                "/images/e447cb96501bff0a8163288ac4aa2c57.jpeg"
+                              }
+                              alt={"presale creator"}
                               fill
                               className="object-cover object-center w-full h-full"
                               priority
                             />
                           </div>
-                          <div className="relative block object-contain w-6 h-6 overflow-hidden rounded-full">
-                            {file ? (
+                          <span>{shortenAddress(address)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="thrustpad_pair_created"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            SailFish pair created
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            This is how the token will be listed
+                          </p>
+                        </div>
+                        <div
+                          id="thrustpad_pair_created"
+                          className="flex items-center gap-2 px-2 w-full text-sm text-[#9E9794] border-[#464849] border bg-[#3E3D3C]  h-12 rounded-md"
+                        >
+                          <div className="flex items-center -space-x-2">
+                            <div className="relative block object-contain w-6 h-6 overflow-hidden rounded-full">
                               <Image
-                                src={imageUrl}
+                                src={"/images/opencampus-edu.png"}
                                 alt={"thrustpad_pair_created"}
                                 fill
                                 className="object-cover object-center w-full h-full"
                                 priority
                               />
-                            ) : null}
+                            </div>
+                            <div className="relative block object-contain w-6 h-6 overflow-hidden rounded-full">
+                              {file ? (
+                                <Image
+                                  src={imageUrl}
+                                  alt={"thrustpad_pair_created"}
+                                  fill
+                                  className="object-cover object-center w-full h-full"
+                                  priority
+                                />
+                              ) : null}
+                            </div>
                           </div>
+                          <span>EDU / {tokenDetails?.token_symbol}</span>
                         </div>
-                        <span>EDU / {tokenDetails?.token_symbol}</span>
+                      </div>
+
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label className="text-sm text-[#FFFCFB] mb-1">
+                            How many {tokenDetails?.token_symbol} are up for
+                            presale?
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Total amount of token to sell to buyers (not
+                            liquidity tokens)
+                          </p>
+                          <p className="text-xs text-right text-white">
+                            Available balance:{" "}
+                            <span>{balance?.toFixed(3)}</span>
+                          </p>
+                        </div>
+
+                        <div className="relative w-full h-12 ">
+                          <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
+                            <span className="px-3 text-white">
+                              {tokenDetails?.token_symbol}
+                            </span>
+                          </div>
+                          <input
+                            type="number"
+                            id="deenie_up_presale"
+                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
+                            name="deenie_up_presale"
+                            required
+                            autoComplete="off"
+                            min={0}
+                            value={presaleAmount}
+                            onChange={(e) => setPresaleAmount(e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label className="text-sm text-[#FFFCFB] mb-1">
-                          How many {tokenDetails?.token_symbol} are up for
-                          presale?
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Total amount of token to sell to buyers (not liquidity
-                          tokens)
-                        </p>
-                        <p className="text-xs text-right text-white">
-                          Available balance: <span>{balance?.toFixed(3)}</span>
-                        </p>
-                      </div>
-
-                      <div className="relative w-full h-12 ">
-                        <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
-                          <span className="px-3 text-white">
-                            {tokenDetails?.token_symbol}
-                          </span>
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="soft_cap"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Soft Cap (EDU)
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Minimum amount of funds raised. It needs to be 30%
+                            of Hard cap
+                          </p>
                         </div>
-                        <input
-                          type="number"
-                          id="deenie_up_presale"
-                          className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
-                          name="deenie_up_presale"
-                          required
-                          autoComplete="off"
-                          min={0}
-                          value={presaleAmount}
-                          onChange={(e) => setPresaleAmount(e.target.value)}
-                        />
+
+                        <div className="relative w-full h-12 ">
+                          <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
+                            <span className="px-3 text-white">EDU</span>
+                          </div>
+                          <input
+                            type="number"
+                            id="soft_cap"
+                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
+                            name="soft_cap"
+                            required
+                            autoComplete="off"
+                            min={0}
+                          />
+                        </div>
+                      </div>
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="hard_cap"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Hard Cap (EDU)
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Maximum amount that can be bought
+                          </p>
+                        </div>
+
+                        <div className="relative w-full h-12 ">
+                          <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
+                            <span className="px-3 text-white">EDU</span>
+                          </div>
+                          <input
+                            type="number"
+                            id="hard_cap"
+                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
+                            name="hard_cap"
+                            required
+                            autoComplete="off"
+                            value={hardCap}
+                            onChange={(e) => setHardCap(e.target.value)}
+                            min={0}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
                     <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                       <div className="mb-1">
                         <label
                           htmlFor="soft_cap"
                           className="text-sm text-[#FFFCFB] mb-1"
                         >
-                          Soft Cap (EDU)
+                          Percent of raised EDU for liquidity
                         </label>
                         <p className="text-[#898582] text-xs">
-                          Minimum amount of funds raised. It needs to be 30% of
-                          Hard cap
+                          Additional tokens required for liquidity is hard cap
+                          is reached
                         </p>
                       </div>
 
-                      <div className="relative w-full h-12 ">
-                        <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
-                          <span className="px-3 text-white">EDU</span>
-                        </div>
-                        <input
-                          type="number"
-                          id="soft_cap"
-                          className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
-                          name="soft_cap"
-                          required
-                          autoComplete="off"
-                          min={0}
-                        />
-                      </div>
-                    </div>
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="hard_cap"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Hard Cap (EDU)
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Maximum amount that can be bought
-                        </p>
-                      </div>
-
-                      <div className="relative w-full h-12 ">
-                        <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
-                          <span className="px-3 text-white">EDU</span>
-                        </div>
-                        <input
-                          type="number"
-                          id="hard_cap"
-                          className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
-                          name="hard_cap"
-                          required
-                          autoComplete="off"
-                          value={hardCap}
-                          onChange={(e) => setHardCap(e.target.value)}
-                          min={0}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                    <div className="mb-1">
-                      <label
-                        htmlFor="soft_cap"
-                        className="text-sm text-[#FFFCFB] mb-1"
-                      >
-                        Percent of raised EDU for liquidity
-                      </label>
-                      <p className="text-[#898582] text-xs">
-                        Additional tokens required for liquidity is hard cap is
-                        reached
-                      </p>
-                    </div>
-
-                    <div className="relative w-full border border-[#464849] p-4 rounded-md text-center">
-                      <div className="max-w-xl mx-auto space-y-3 ">
-                        <div>
-                          <h3 className="text-[22px] font-medium text-white inline-flex items-center gap-2">
-                            {liquidityPercentage.toFixed(2)}% ~
-                            <div className="flex space-x-2 items-center">
-                              <div className="relative block object-contain w-5 h-5 overflow-hidden rounded-full">
-                                <Image
-                                  src={"/images/opencampus-edu.png"}
-                                  alt={"fall-back"}
-                                  fill
-                                  className="object-cover object-center w-full h-full"
-                                  priority
-                                />
+                      <div className="relative w-full border border-[#464849] p-4 rounded-md text-center">
+                        <div className="max-w-xl mx-auto space-y-3 ">
+                          <div>
+                            <h3 className="text-[22px] font-medium text-white inline-flex items-center gap-2">
+                              {liquidityPercentage.toFixed(2)}% ~
+                              <div className="flex items-center space-x-2">
+                                <div className="relative block object-contain w-5 h-5 overflow-hidden rounded-full">
+                                  <Image
+                                    src={"/images/opencampus-edu.png"}
+                                    alt={"fall-back"}
+                                    fill
+                                    className="object-cover object-center w-full h-full"
+                                    priority
+                                  />
+                                </div>
+                                <span>
+                                  {(hardCap * liquidityPercentage) / 100 ?? 0}
+                                </span>
+                                <span className="text-[#BEBDBD] text-sm">
+                                  EDU
+                                </span>
                               </div>
-                              <span>
-                                {(hardCap * liquidityPercentage) / 100 ?? 0}
-                              </span>
-                              <span className="text-[#BEBDBD] text-sm">
-                                EDU
-                              </span>
+                            </h3>
+                          </div>
+                          <div>
+                            <input
+                              type="range"
+                              className="block w-full h-1 rounded-md range-slider"
+                              value={liquidityPercentage}
+                              onChange={(e) => {
+                                const value = Number(e.target.value ?? 0);
+                                if (value >= 60) {
+                                  setLiquidityPercentage(value);
+                                }
+                              }}
+                              min={60}
+                              max={100}
+                            />
+                            <div className="flex items-center justify-between mt-1 text-sm">
+                              <span>60%</span>
+                              <span>100%</span>
                             </div>
-                          </h3>
-                        </div>
-                        <div>
-                          <input
-                            type="range"
-                            className="block w-full h-1 rounded-md range-slider"
-                            value={liquidityPercentage}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              if (value >= 60) {
-                                setLiquidityPercentage(value);
-                              }
-                            }}
-                            min={60}
-                            max={100}
-                          />
-                          <div className="flex items-center justify-between mt-1 text-sm">
-                            <span>60%</span>
-                            <span>100%</span>
                           </div>
                         </div>
-                      </div>
 
-                      {/* <RangeSlider
+                        {/* <RangeSlider
                                                 aria-label={['min']}
                                                 colorScheme='#FFA178'
 
@@ -1080,11 +1159,11 @@ export default function FairLaunchStepper() {
                                             </RangeSliderTrack>
                                             <RangeSliderThumb index={0} />
                                             </RangeSlider> */}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                    {/* <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      {/* <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                       <div className="mb-1">
                         <label
                           htmlFor="soft_cap"
@@ -1135,176 +1214,176 @@ export default function FairLaunchStepper() {
                         </div>
                       </div>
                     </div> */}
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="max_allocation_per_user"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Minimum allocation per user
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Amount changes based on min allocation per user
-                        </p>
-                      </div>
-
-                      <div className="relative w-full h-12 ">
-                        <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
-                          <span className="px-3 text-white">EDU</span>
-                        </div>
-                        <input
-                          type="number"
-                          step="0.01"
-                          id="min_allocation_per_user"
-                          className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
-                          name="min_allocation_per_user"
-                          // placeholder={0}
-                          // min={0}
-                          required
-                          autoComplete="off"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 mt-1">
-                        <div className="text-[#B7B1AE] inline-flex items-center gap-3">
-                          {/* <p className="text-xs">300 unique participants</p> */}
-                          {/* <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2">
-                            <span className="h-1 w-1 rounded-full bg-[#00FFA3] block"></span>
-                            Right on spot!!
-                          </div> */}
-                        </div>
-
-                        {/* <div className="inline-flex items-center gap-3">
-                          <p className="text-[#B7B1AE] text-xs">
-                            <span className="text-white ">0</span> UNCL spots
-                          </p>
-                          <p className="text-[#B7B1AE] text-xs">
-                            <span className="text-white ">200</span> whitelist
-                            spots
-                          </p>
-                        </div> */}
-                      </div>
-                    </div>
-
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="max_allocation_per_user"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Maximum allocation per user
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Amount changes based on max allocation per user
-                        </p>
-                      </div>
-
-                      <div className="relative w-full h-12 ">
-                        <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
-                          <span className="px-3 text-white">EDU</span>
-                        </div>
-                        <input
-                          type="number"
-                          step="0.01"
-                          id="max_allocation_per_user"
-                          className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
-                          name="max_allocation_per_user"
-                          // placeholder={0}
-                          // min={0}
-                          required
-                          autoComplete="off"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 mt-1">
-                        <div className="text-[#B7B1AE] inline-flex items-center gap-3">
-                          {/* <p className="text-xs">300 unique participants</p> */}
-                          {/* <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2">
-                            <span className="h-1 w-1 rounded-full bg-[#00FFA3] block"></span>
-                            Right on spot!!
-                          </div> */}
-                        </div>
-
-                        {/* <div className="inline-flex items-center gap-3">
-                          <p className="text-[#B7B1AE] text-xs">
-                            <span className="text-white ">0</span> UNCL spots
-                          </p>
-                          <p className="text-[#B7B1AE] text-xs">
-                            <span className="text-white ">200</span> whitelist
-                            spots
-                          </p>
-                        </div> */}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-start w-full gap-5 lg:flex-nowrap">
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="presale_rate"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Presale rate
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          This is gotten by dividing hard cap from the total
-                          token up for sale
-                        </p>
-                      </div>
-                      <input
-                        type="text"
-                        id="presale_rate"
-                        className="block px-2 w-full text-sm text-[#FFA178] border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0 font-medium"
-                        placeholder={`1 EDU = 5678623514 ${tokenDetails?.token_symbol}`}
-                        disabled
-                        value={presaleRate}
-                        name="presale_rate"
-                        autoComplete="off"
-                      />
-                    </div>
-
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="listing_rate"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Listing rate
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          This is the percent of presale rate you want to list
-                        </p>
-                      </div>
-                      <input
-                        type="text"
-                        id="listing_rate"
-                        className="block px-2 w-full text-sm text-[#FFA178] border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0 font-medium"
-                        placeholder={`1 EDU = 567 ${tokenDetails?.token_symbol}`}
-                        name="listing_rate"
-                        value={listingRate}
-                        disabled
-                        autoComplete="off"
-                      />
-                      <div className="flex items-center gap-2 mt-1">
-                        {[0, 10, 15, 25, 30].map((percent) => (
-                          <button
-                            key={percent}
-                            type="button"
-                            onClick={() => setListingRatePercentage(percent)}
-                            className={`text-xs border border-[#474443] rounded-2xl py-1 px-2 text-white ${
-                              percent === listingRatePercentage
-                                ? "border-[#DA5921]"
-                                : ""
-                            }`}
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="max_allocation_per_user"
+                            className="text-sm text-[#FFFCFB] mb-1"
                           >
-                            {percent}%
-                          </button>
-                        ))}
+                            Minimum allocation per user
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Amount changes based on min allocation per user
+                          </p>
+                        </div>
+
+                        <div className="relative w-full h-12 ">
+                          <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
+                            <span className="px-3 text-white">EDU</span>
+                          </div>
+                          <input
+                            type="number"
+                            step="0.01"
+                            id="min_allocation_per_user"
+                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
+                            name="min_allocation_per_user"
+                            // placeholder={0}
+                            // min={0}
+                            required
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1 mt-1">
+                          <div className="text-[#B7B1AE] inline-flex items-center gap-3">
+                            {/* <p className="text-xs">300 unique participants</p> */}
+                            {/* <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2">
+                            <span className="h-1 w-1 rounded-full bg-[#00FFA3] block"></span>
+                            Right on spot!!
+                          </div> */}
+                          </div>
+
+                          {/* <div className="inline-flex items-center gap-3">
+                          <p className="text-[#B7B1AE] text-xs">
+                            <span className="text-white ">0</span> UNCL spots
+                          </p>
+                          <p className="text-[#B7B1AE] text-xs">
+                            <span className="text-white ">200</span> whitelist
+                            spots
+                          </p>
+                        </div> */}
+                        </div>
+                      </div>
+
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="max_allocation_per_user"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Maximum allocation per user
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Amount changes based on max allocation per user
+                          </p>
+                        </div>
+
+                        <div className="relative w-full h-12 ">
+                          <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
+                            <span className="px-3 text-white">EDU</span>
+                          </div>
+                          <input
+                            type="number"
+                            step="0.01"
+                            id="max_allocation_per_user"
+                            className="border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent rounded-md block w-full pl-2 pr-12 h-full text-white"
+                            name="max_allocation_per_user"
+                            // placeholder={0}
+                            // min={0}
+                            required
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1 mt-1">
+                          <div className="text-[#B7B1AE] inline-flex items-center gap-3">
+                            {/* <p className="text-xs">300 unique participants</p> */}
+                            {/* <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2">
+                            <span className="h-1 w-1 rounded-full bg-[#00FFA3] block"></span>
+                            Right on spot!!
+                          </div> */}
+                          </div>
+
+                          {/* <div className="inline-flex items-center gap-3">
+                          <p className="text-[#B7B1AE] text-xs">
+                            <span className="text-white ">0</span> UNCL spots
+                          </p>
+                          <p className="text-[#B7B1AE] text-xs">
+                            <span className="text-white ">200</span> whitelist
+                            spots
+                          </p>
+                        </div> */}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                    {/* <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                    <div className="flex flex-wrap items-start w-full gap-5 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="presale_rate"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Presale rate
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            This is gotten by dividing hard cap from the total
+                            token up for sale
+                          </p>
+                        </div>
+                        <input
+                          type="text"
+                          id="presale_rate"
+                          className="block px-2 w-full text-sm text-[#FFA178] border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0 font-medium"
+                          placeholder={`1 EDU = 5678623514 ${tokenDetails?.token_symbol}`}
+                          disabled
+                          value={presaleRate}
+                          name="presale_rate"
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="listing_rate"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Listing rate
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            This is the percent of presale rate you want to list
+                          </p>
+                        </div>
+                        <input
+                          type="text"
+                          id="listing_rate"
+                          className="block px-2 w-full text-sm text-[#FFA178] border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-[#3E3D3C]  h-12 rounded-md focus:outline-0 font-medium"
+                          placeholder={`1 EDU = 567 ${tokenDetails?.token_symbol}`}
+                          name="listing_rate"
+                          value={listingRate}
+                          disabled
+                          autoComplete="off"
+                        />
+                        <div className="flex items-center gap-2 mt-1">
+                          {[0, 10, 15, 25, 30].map((percent) => (
+                            <button
+                              key={percent}
+                              type="button"
+                              onClick={() => setListingRatePercentage(percent)}
+                              className={`text-xs border border-[#474443] rounded-2xl py-1 px-2 text-white ${
+                                percent === listingRatePercentage
+                                  ? "border-[#DA5921]"
+                                  : ""
+                              }`}
+                            >
+                              {percent}%
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      {/* <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                       <div className="flex flex-wrap items-center justify-center gap-2">
                         <div className="relative flex flex-col w-full gap-1 lg:w-1/3">
                           <div className="mb-1">
@@ -1429,228 +1508,231 @@ export default function FairLaunchStepper() {
                         </div>
                       </div>
                     </div> */}
-                  </div>
-
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="start_date"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Start Date
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Date to begin fair launch sale
-                        </p>
-                      </div>
-                      <input
-                        type="datetime-local"
-                        id="start_date"
-                        className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                        placeholder=" "
-                        name="start_date"
-                        required
-                        autoComplete="off"
-                      />
                     </div>
 
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="end_date"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          End Date
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          End date needs to be set as minimum 24h of start date
-                        </p>
-                      </div>
-                      <input
-                        type="datetime-local"
-                        id="end_date"
-                        className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                        placeholder=" "
-                        name="end_date"
-                        required
-                        autoComplete="off"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="liquidity_lock_period"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Liquidity lock period
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Estimated period where liquidity would be locked
-                        </p>
-                      </div>
-                      <select
-                        defaultValue={30}
-                        disabled
-                        id="liquidity_lock_period"
-                        className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                        name="liquidity_lock_period"
-                      >
-                        <option value={30}>30 days</option>
-                      </select>
-                    </div>
-
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <div className="mb-1">
-                        <label
-                          htmlFor="country"
-                          className="text-sm text-[#FFFCFB] mb-1"
-                        >
-                          Country
-                        </label>
-                        <p className="text-[#898582] text-xs">
-                          Select your country of operation. Where is your
-                          business headquartered
-                        </p>
-                      </div>
-                      <select
-                        id="country"
-                        className="block px-2 w-full text-sm border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                        name="country"
-                      >
-                        <option value={""} className="text-black">
-                          Select a country
-                        </option>
-                        {allCountries.map((country) => (
-                          <option
-                            key={country?.isoCode}
-                            className="text-black"
-                            value={country?.name}
-                          >
-                            {country?.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap opacity-50 items-center w-full gap-5 lg:flex-nowrap">
-                    <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                      <label
-                        htmlFor={`add_sale_vesting`}
-                        className="flex items-start cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          id={`add_sale_vesting`}
-                          className="mr-2 caret-[#FFA178] h-4 w-4 mt-1"
-                          value={1}
-                          name="enable_edu_as_yield"
-                          required
-                          disabled
-                          autoComplete="off"
-                          onChange={() => {
-                            setSaleVesting(!saleVesting);
-                          }}
-                        />
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                         <div className="mb-1">
-                          <h4 className="text-sm text-[#FFFCFB] mb-1">
-                            Add Sale Vesting (Coming Soon)
-                          </h4>
+                          <label
+                            htmlFor="start_date"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Start Date
+                          </label>
                           <p className="text-[#898582] text-xs">
-                            Add vesting for sale contributors
+                            Date to begin fair launch sale
                           </p>
                         </div>
-                      </label>
-                    </div>
-                  </div>
+                        <input
+                          type="datetime-local"
+                          id="start_date"
+                          className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                          placeholder=" "
+                          name="start_date"
+                          required
+                          autoComplete="off"
+                        />
+                      </div>
 
-                  {saleVesting ? (
-                    <>
-                      <div className="px-4">
-                        <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                          <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                            <label
-                              htmlFor="token_release_on_launch"
-                              className="text-sm text-[#FFFCFB] mb-1"
-                            >
-                              Token release on launch{" "}
-                              <span className="text-[#898582]">(%)</span>
-                            </label>
-                            <input
-                              type="number"
-                              id="token_release_on_launch"
-                              className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                              placeholder=" "
-                              name="token_release_on_launch"
-                            />
-                          </div>
-
-                          <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                            <label
-                              htmlFor="cliff"
-                              className="text-sm text-[#FFFCFB] mb-1"
-                            >
-                              Cliff{" "}
-                              <span className="text-[#898582]">
-                                (Extra delay in days before first vesting cycle)
-                              </span>
-                            </label>
-                            <input
-                              type="number"
-                              id="cliff"
-                              className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                              placeholder=" "
-                              name="cliff"
-                            />
-                          </div>
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="end_date"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            End Date
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            End date needs to be set as minimum 24h of start
+                            date
+                          </p>
                         </div>
+                        <input
+                          type="datetime-local"
+                          id="end_date"
+                          className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                          placeholder=" "
+                          name="end_date"
+                          required
+                          autoComplete="off"
+                        />
+                      </div>
+                    </div>
 
-                        <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
-                          <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                            <div className="mb-1">
+                    <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="liquidity_lock_period"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Liquidity lock period
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Estimated period where liquidity would be locked
+                          </p>
+                        </div>
+                        <select
+                          defaultValue={30}
+                          disabled
+                          id="liquidity_lock_period"
+                          className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                          name="liquidity_lock_period"
+                        >
+                          <option value={30}>30 days</option>
+                        </select>
+                      </div>
+
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <div className="mb-1">
+                          <label
+                            htmlFor="country"
+                            className="text-sm text-[#FFFCFB] mb-1"
+                          >
+                            Country
+                          </label>
+                          <p className="text-[#898582] text-xs">
+                            Select your country of operation. Where is your
+                            business headquartered
+                          </p>
+                        </div>
+                        <select
+                          id="country"
+                          className="block px-2 w-full text-sm border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                          name="country"
+                        >
+                          <option value={""} className="text-black">
+                            Select a country
+                          </option>
+                          {allCountries.map((country) => (
+                            <option
+                              key={country?.isoCode}
+                              className="text-black"
+                              value={country?.name}
+                            >
+                              {country?.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center w-full gap-5 opacity-50 lg:flex-nowrap">
+                      <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                        <label
+                          htmlFor={`add_sale_vesting`}
+                          className="flex items-start cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`add_sale_vesting`}
+                            className="mr-2 caret-[#FFA178] h-4 w-4 mt-1"
+                            value={1}
+                            name="enable_edu_as_yield"
+                            required
+                            disabled
+                            autoComplete="off"
+                            onChange={() => {
+                              setSaleVesting(!saleVesting);
+                            }}
+                          />
+                          <div className="mb-1">
+                            <h4 className="text-sm text-[#FFFCFB] mb-1">
+                              Add Sale Vesting (Coming Soon)
+                            </h4>
+                            <p className="text-[#898582] text-xs">
+                              Add vesting for sale contributors
+                            </p>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
+                    {saleVesting ? (
+                      <>
+                        <div className="px-4">
+                          <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                            <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                               <label
-                                htmlFor="token_release"
+                                htmlFor="token_release_on_launch"
                                 className="text-sm text-[#FFFCFB] mb-1"
                               >
-                                Token release per vesting cycle{" "}
+                                Token release on launch{" "}
                                 <span className="text-[#898582]">(%)</span>
                               </label>
+                              <input
+                                type="number"
+                                id="token_release_on_launch"
+                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                placeholder=" "
+                                name="token_release_on_launch"
+                              />
                             </div>
-                            <input
-                              type="number"
-                              id="token_release"
-                              className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                              name="token_release"
-                            />
-                          </div>
 
-                          <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
-                            <div className="mb-1">
+                            <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
                               <label
-                                htmlFor="vesting_period"
+                                htmlFor="cliff"
                                 className="text-sm text-[#FFFCFB] mb-1"
                               >
-                                Vesting period each cycle{" "}
-                                <span className="text-[#898582]">(days)</span>
+                                Cliff{" "}
+                                <span className="text-[#898582]">
+                                  (Extra delay in days before first vesting
+                                  cycle)
+                                </span>
                               </label>
+                              <input
+                                type="number"
+                                id="cliff"
+                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                placeholder=" "
+                                name="cliff"
+                              />
                             </div>
-                            <input
-                              type="number"
-                              id="vesting_period"
-                              className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
-                              name="vesting_period"
-                            />
+                          </div>
+
+                          <div className="flex flex-wrap items-center w-full gap-5 lg:flex-nowrap">
+                            <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                              <div className="mb-1">
+                                <label
+                                  htmlFor="token_release"
+                                  className="text-sm text-[#FFFCFB] mb-1"
+                                >
+                                  Token release per vesting cycle{" "}
+                                  <span className="text-[#898582]">(%)</span>
+                                </label>
+                              </div>
+                              <input
+                                type="number"
+                                id="token_release"
+                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                name="token_release"
+                              />
+                            </div>
+
+                            <div className="relative flex flex-col w-full gap-1 mb-6 lg:w-1/2">
+                              <div className="mb-1">
+                                <label
+                                  htmlFor="vesting_period"
+                                  className="text-sm text-[#FFFCFB] mb-1"
+                                >
+                                  Vesting period each cycle{" "}
+                                  <span className="text-[#898582]">(days)</span>
+                                </label>
+                              </div>
+                              <input
+                                type="number"
+                                id="vesting_period"
+                                className="block px-2 w-full text-sm text-white border-[#464849] focus:outline-none focus:border-[#524F4D] border bg-transparent  h-12 rounded-md focus:outline-0"
+                                name="vesting_period"
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-center w-full gap-3 mt-4">
                   <button

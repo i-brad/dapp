@@ -82,16 +82,18 @@ const TokenChart = ({ collection }) => {
         parseFloat(collection?.locked || 0),
         parseFloat(collection?.unlocked || 0),
         parseFloat(collection?.burnt || 0),
+        parseFloat(collection?.staking || 0),
         parseFloat(collection?.staking_rewards || 0),
       ];
 
       const labels = [
-        "Presale",
-        "Liquidity",
-        "Locked",
-        "Unlocked",
-        "Burnt",
-        "Staking Rewards",
+        `Presale - ${collection?.presale}`,
+        `Liquidity - ${collection?.liquidity}`,
+        `Locked - ${collection?.locked}`,
+        `Unlocked - ${collection?.unlocked}`,
+        `Burnt - ${collection?.burnt}`,
+        `Staking - ${collection?.staking}`,
+        `Staking Rewards - ${collection?.staking_rewards}`,
       ];
 
       setOptions((prevOptions) => ({

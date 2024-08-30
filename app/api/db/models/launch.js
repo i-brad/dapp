@@ -18,6 +18,10 @@ const TokenomicSchema = new Schema({
     type: Number,
     required: true,
   },
+  staking: {
+    type: Number,
+    required: true,
+  },
   staking_rewards: {
     type: Number,
     required: true,

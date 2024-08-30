@@ -14,15 +14,29 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import Loading from "./loading";
 
+export async function generateMetadata({ params }) {
+  const { slug } = params;
+
+  const response = await fetch(
+    `https://www.thrustpad.finance/api/launch?id=${slug}`
+  );
+  if (response.ok) {
+    const data = await response.json();
+    return {
+      title: data?.launch?.name,
+      description: data?.launch?.description,
+      images: [
+        {
+          url: data?.launch?.logo_url, // Must be an absolute URL
+          width: 800,
+          height: 600,
+        },
+      ],
+    };
+  }
+}
+
 const SingleLaunchPad = () => {
-  const collection = {
-    presale: "0",
-    liquidity: "0",
-    unlocked: "0",
-    locked: "0",
-    burnt: "0",
-    staking_rewards: "0",
-  };
   const router = useRouter();
   const params = useParams();
   const { slug } = params;
@@ -161,29 +175,43 @@ const SingleLaunchPad = () => {
         signer
       );
 
-      const response = await launchContract.buyToken({
+      if (isClaimToken) {
+        const tokenClaimResponse = await launchContract.claimTokens();
+
+        if (tokenClaimResponse) {
+          toast({
+            title: "Token Claimed Successfully",
+            description: `Transaction Hash ${tokenClaimResponse?.hash}`,
+            status: "success",
+            duration: 3000,
+          });
+        }
+
+        return;
+      }
+
+      const tokenRefundResponse = await launchContract.buyToken({
         value: ethers.parseEther(amount.toString()),
       });
 
-      if (response) {
+      if (tokenRefundResponse) {
         toast({
-          title: "Purchase Successful!",
-          description: `Transaction Hash ${response?.hash}`,
+          title: "Funded refunded successfully",
+          description: `Transaction Hash ${tokenRefundResponse?.hash}`,
           status: "success",
           duration: 3000,
         });
-        setAmount(0);
       }
     } catch (error) {
-      console.error("Failed purchase", error);
+      console.error("Failed claim", error);
       toast({
-        title: "Failed to buy token",
+        title: "Failed to Claim",
         description: error.message,
         status: "error",
         duration: 5000,
       });
     } finally {
-      setBuyingToken(false);
+      setClaiming(false);
     }
   };
 
@@ -224,6 +252,16 @@ const SingleLaunchPad = () => {
     }
   };
 
+  const collection = {
+    presale: launch?.presale || "0",
+    liquidity: launch?.liquidity || "0",
+    unlocked: launch?.unlocked || "0",
+    locked: launch?.locked || "0",
+    burnt: launch?.burnt || "0",
+    staking_rewards: launch?.staking_rewards || "0",
+    staking: launch?.staking || "0",
+  };
+
   return (
     <>
       <div className="text-white">
@@ -236,8 +274,8 @@ const SingleLaunchPad = () => {
             <ArrowLeft /> Back
           </button>
         </div>
-        <div className="flex gap-8 py-12 flex-wrap lg:flex-nowrap">
-          <div className="w-full md:w-full lg:w-7/12 space-y-8">
+        <div className="flex flex-wrap gap-8 py-12 lg:flex-nowrap">
+          <div className="w-full space-y-8 md:w-full lg:w-7/12">
             <div className="bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5 relative">
               {status === "In Progress" || status === "Ended" ? (
                 <div className="bg-[#353432] text-[#00FFA3] max-w-fit px-3 py-1 rounded-3xl text-xs inline-flex items-center gap-2 absolute right-2 top-2">
@@ -266,19 +304,19 @@ const SingleLaunchPad = () => {
                       ) : null}
                     </div>
 
-                    <div className="w-5 h-5 overflow-hidden block object-contain rounded-full absolute bottom-0 right-6">
+                    <div className="absolute bottom-0 block object-contain w-5 h-5 overflow-hidden rounded-full right-6">
                       <Image
                         src={"/images/opencampus-edu.png"}
                         alt={"fall-back"}
                         fill
-                        className="w-full h-full object-cover object-center"
+                        className="object-cover object-center w-full h-full"
                         priority
                       />
                     </div>
                   </div>
                 </div>
-                <div className="font-medium flex flex-col gap-2">
-                  <span className="text-white text-lg">{launch?.name}</span>
+                <div className="flex flex-col gap-2 font-medium">
+                  <span className="text-lg text-white">{launch?.name}</span>
                   <div className="text-[#A19B99] text-base flex items-center gap-2">
                     <a
                       href={launch?.website}
@@ -308,12 +346,12 @@ const SingleLaunchPad = () => {
                 }}
               />
               <div>
-                <h3 className="font-medium text-white text-lg mb-2">
+                <h3 className="mb-2 text-lg font-medium text-white">
                   Token Details
                 </h3>
 
                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                  <div className="p-2 w-full flex justify-between items-center flex-wrap">
+                  <div className="flex flex-wrap items-center justify-between w-full p-2">
                     <h3 className="font-medium text-[#898582] text-sm">
                       Token address
                     </h3>
@@ -333,7 +371,7 @@ const SingleLaunchPad = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className="font-medium text-[#898582] text-sm">
                       Token name
                     </h3>
@@ -341,7 +379,7 @@ const SingleLaunchPad = () => {
                       {launch?.token_name}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Token symbol
                     </h3>
@@ -349,7 +387,7 @@ const SingleLaunchPad = () => {
                       {launch?.token_symbol}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Total supply
                     </h3>
@@ -360,12 +398,12 @@ const SingleLaunchPad = () => {
                 </div>
               </div>
               <div>
-                <h3 className="font-medium text-white text-lg mb-2">
+                <h3 className="mb-2 text-lg font-medium text-white">
                   Pool info
                 </h3>
 
                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                  <div className="p-2 w-full flex justify-between items-center  flex-wrap">
+                  <div className="flex flex-wrap items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Pool address
                     </h3>
@@ -380,7 +418,7 @@ const SingleLaunchPad = () => {
                       </span>
                     </button>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Token for Presale
                     </h3>
@@ -388,7 +426,7 @@ const SingleLaunchPad = () => {
                       {launch?.presale_amount} {launch?.token_symbol}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Soft cap
                     </h3>
@@ -396,7 +434,7 @@ const SingleLaunchPad = () => {
                       {launch?.soft_cap} EDU
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Hard cap
                     </h3>
@@ -404,7 +442,7 @@ const SingleLaunchPad = () => {
                       {launch?.hard_cap} EDU
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Presale Rate
                     </h3>
@@ -412,7 +450,7 @@ const SingleLaunchPad = () => {
                       1 EDU = {launch?.presale_rate} {launch?.token_symbol}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Listing Rate
                     </h3>
@@ -420,7 +458,7 @@ const SingleLaunchPad = () => {
                       1 EDU = {launch?.listing_rate} {launch?.token_symbol}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Start time
                     </h3>
@@ -428,7 +466,7 @@ const SingleLaunchPad = () => {
                       {new Date(launch?.start_date)?.toLocaleString()}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       End time
                     </h3>
@@ -436,7 +474,7 @@ const SingleLaunchPad = () => {
                       {new Date(launch?.end_date)?.toLocaleString()}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Liquidity percent
                     </h3>
@@ -444,7 +482,7 @@ const SingleLaunchPad = () => {
                       {launch?.tokenomics?.liquidity}%
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Liquidity Lockup Time
                     </h3>
@@ -457,12 +495,12 @@ const SingleLaunchPad = () => {
             </div>
             <div className="bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5">
               <div>
-                <h3 className="font-medium text-white text-lg mb-2">
+                <h3 className="mb-2 text-lg font-medium text-white">
                   Tokenomic
                 </h3>
 
                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full min-h-96 h-full items-start justify-center">
-                  <div className="h-full flex items-center  w-full">
+                  <div className="flex items-center w-full h-full">
                     <TokenChart collection={collection} />
                   </div>
                 </div>
@@ -473,8 +511,8 @@ const SingleLaunchPad = () => {
           <div className="w-full md:w-full lg:w-5/12">
             <div className="bg-[#272727] rounded-lg px-5 py-4 flex flex-col gap-5">
               <div>
-                <div className="py-2 w-full ">
-                  <h3 className="font-medium text-white text-base">
+                <div className="w-full py-2 ">
+                  <h3 className="text-base font-medium text-white">
                     Presale ends in
                   </h3>
                 </div>
@@ -484,25 +522,25 @@ const SingleLaunchPad = () => {
                       <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
                         {days}
                       </div>
-                      <p className="text-GreyCloud text-xs md:text-sm">Day</p>
+                      <p className="text-xs text-GreyCloud md:text-sm">Day</p>
                     </div>
                     <div className="text-center">
                       <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
                         {hours}
                       </div>
-                      <p className="text-GreyCloud text-xs md:text-sm">Hr</p>
+                      <p className="text-xs text-GreyCloud md:text-sm">Hr</p>
                     </div>
                     <div className="text-center">
                       <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
                         {minutes}
                       </div>
-                      <p className="text-GreyCloud text-xs md:text-sm">Min</p>
+                      <p className="text-xs text-GreyCloud md:text-sm">Min</p>
                     </div>
                     <div className="text-center">
                       <div className="bg-[#EA6A32] size-12 rounded-lg flex justify-center items-center text-Iridium text-xl md:text-[1.375rem] font-semibold mb-2.5">
                         {seconds}
                       </div>
-                      <p className="text-GreyCloud text-xs md:text-sm">Sec</p>
+                      <p className="text-xs text-GreyCloud md:text-sm">Sec</p>
                     </div>
                   </div>
 
@@ -543,13 +581,13 @@ const SingleLaunchPad = () => {
                             : "Claim Token"}
                         </button>
                       </div>
-                    ) : (
+                    ) : status !== "Ended" ? (
                       <div>
-                        <h3 className="font-medium text-white text-base mb-3">
+                        <h3 className="mb-3 text-base font-medium text-white">
                           Contribute
                         </h3>
-                        <div className="flex flex-col gap-1 relative w-full">
-                          <div className="mb-1 flex items-center justify-between">
+                        <div className="relative flex flex-col w-full gap-1">
+                          <div className="flex items-center justify-between mb-1">
                             <label
                               htmlFor="amount"
                               className="text-sm text-[#FFFCFB] font-medium"
@@ -564,15 +602,15 @@ const SingleLaunchPad = () => {
                             </p>
                           </div>
 
-                          <div className=" relative w-full h-12">
-                            <div className="absolute inset-y-0 left-0 pr-1 flex items-center pointer-events-none h-full">
-                              <span className="text-white px-3">
-                                <div className="w-5 h-5 relative overflow-hidden block object-contain rounded-full">
+                          <div className="relative w-full h-12 ">
+                            <div className="absolute inset-y-0 left-0 flex items-center h-full pr-1 pointer-events-none">
+                              <span className="px-3 text-white">
+                                <div className="relative block object-contain w-5 h-5 overflow-hidden rounded-full">
                                   <Image
                                     src={"/images/opencampus-edu.png"}
                                     alt={"fall-back"}
                                     fill
-                                    className="w-full h-full object-cover object-center"
+                                    className="object-cover object-center w-full h-full"
                                     priority
                                   />
                                 </div>
@@ -587,7 +625,7 @@ const SingleLaunchPad = () => {
                               onChange={(e) => setAmount(e.target.value)}
                               autoComplete="off"
                             />
-                            <div className="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none h-full">
+                            <div className="absolute inset-y-0 right-0 flex items-center h-full pr-1 pointer-events-none">
                               <button
                                 onClick={() => setAmount(balance)}
                                 className="text-[#FFA178] px-3 font-medium"
@@ -603,7 +641,7 @@ const SingleLaunchPad = () => {
                           </span>
                         </div>
                       </div>
-                    )}
+                    ) : null}
 
                     <div className="flex items-center justify-center w-full">
                       <button
@@ -624,7 +662,7 @@ const SingleLaunchPad = () => {
               </div>
               <div>
                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className="font-medium text-[#898582] text-sm">
                       Status
                     </h3>
@@ -638,7 +676,7 @@ const SingleLaunchPad = () => {
                       {status}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Unsold Token
                     </h3>
@@ -646,7 +684,7 @@ const SingleLaunchPad = () => {
                       {launch?.hard_cap - totalSold} {launch?.token_symbol}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Minimum buy
                     </h3>
@@ -654,7 +692,7 @@ const SingleLaunchPad = () => {
                       {launch?.minimum_user_allocation} EDU
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Maximum buy
                     </h3>
@@ -662,7 +700,7 @@ const SingleLaunchPad = () => {
                       {launch?.maximum_user_allocation} EDU
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Total Contributors
                     </h3>
@@ -670,7 +708,7 @@ const SingleLaunchPad = () => {
                       {totalContributors}
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       Avg. Contributions
                     </h3>
@@ -683,7 +721,7 @@ const SingleLaunchPad = () => {
 
               <div>
                 <div className="text-white border border-[#464849] rounded-lg py-[14px] px-5 flex flex-col w-full">
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className="font-medium text-[#898582] text-sm">
                       My Contribution
                     </h3>
@@ -691,7 +729,7 @@ const SingleLaunchPad = () => {
                       {myContributions} EDU
                     </span>
                   </div>
-                  <div className="p-2 w-full flex justify-between items-center">
+                  <div className="flex items-center justify-between w-full p-2">
                     <h3 className=" font-medium text-[#898582] text-sm">
                       My Reserved Tokens
                     </h3>

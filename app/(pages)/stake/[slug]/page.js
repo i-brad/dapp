@@ -18,6 +18,28 @@ import { useAccount, useBalance } from "wagmi";
 import Loading from "./loading";
 import { timeAgo, getFormattedDate } from "@/app/lib/utils";
 
+export async function generateMetadata({ params }) {
+  const { slug } = params;
+
+  const response = await fetch(
+    `https://www.thrustpad.finance/api/stake?id=${slug}`
+  );
+  if (response.ok) {
+    const data = await response.json();
+    return {
+      title: data?.stake?.stake_name,
+      description: data?.stake_description,
+      images: [
+        {
+          url: data?.stake?.logo_url, // Must be an absolute URL
+          width: 800,
+          height: 600,
+        },
+      ],
+    };
+  }
+}
+
 const SingleStake = () => {
   const router = useRouter();
   const params = useParams();
